@@ -42,7 +42,12 @@ const items = [
 ];
 
 const AppLayout: React.FC = () => {
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const [current] = useState(() => {
+    return location.pathname.startsWith("/music")
+      ? "/music"
+      : location.pathname;
+  });
 
   const [collapsed, setCollapsed] = useState(false);
   const {
@@ -61,7 +66,7 @@ const AppLayout: React.FC = () => {
           style={{ padding: 0, background: "#210028" }}
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={[pathname]}
+          defaultSelectedKeys={[current]}
           items={items}
         />
       </Sider>
