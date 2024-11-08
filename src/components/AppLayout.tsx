@@ -3,12 +3,8 @@ import {
   BarsOutlined,
   HomeOutlined,
   MenuFoldOutlined,
-  MenuOutlined,
   MenuUnfoldOutlined,
   StarOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
 import { Footer } from "antd/es/layout/layout";
@@ -61,7 +57,6 @@ const AppLayout: React.FC = () => {
         collapsed={collapsed}
         style={{ background: "#210028" }}
       >
-        <div className="demo-logo-vertical"></div>
         <Menu
           style={{ padding: 0, background: "#210028" }}
           theme="dark"
