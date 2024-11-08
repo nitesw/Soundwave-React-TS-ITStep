@@ -1,17 +1,53 @@
 import React, { useState } from "react";
 import {
+  BarsOutlined,
+  HomeOutlined,
   MenuFoldOutlined,
+  MenuOutlined,
   MenuUnfoldOutlined,
+  StarOutlined,
   UploadOutlined,
   UserOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
 import { Footer } from "antd/es/layout/layout";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
 const { Header, Sider, Content } = Layout;
+const items = [
+  {
+    key: "/",
+    label: "Home",
+    icon: (
+      <Link to="/" draggable="false">
+        <HomeOutlined />
+      </Link>
+    ),
+  },
+  {
+    key: "/music",
+    label: "Music",
+    icon: (
+      <Link to="/music" draggable="false">
+        <BarsOutlined />
+      </Link>
+    ),
+  },
+  {
+    key: "/favourites",
+    label: "Favourites",
+    icon: (
+      <Link to="/favourites" draggable="false">
+        <StarOutlined />
+      </Link>
+    ),
+  },
+];
 
 const AppLayout: React.FC = () => {
+  const { pathname } = useLocation();
+
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -19,29 +55,19 @@ const AppLayout: React.FC = () => {
 
   return (
     <Layout className="AppLayout">
-      <Sider trigger={null} collapsible collapsed={collapsed}>
-        {/* <div className="logo-vertical">Soundwave</div> */}
+      <Sider
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        style={{ background: "#210028" }}
+      >
+        <div className="demo-logo-vertical"></div>
         <Menu
+          style={{ padding: 0, background: "#210028" }}
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={["1"]}
-          items={[
-            {
-              key: "1",
-              icon: <UserOutlined />,
-              label: "nav 1",
-            },
-            {
-              key: "2",
-              icon: <VideoCameraOutlined />,
-              label: "nav 2",
-            },
-            {
-              key: "3",
-              icon: <UploadOutlined />,
-              label: "nav 3",
-            },
-          ]}
+          defaultSelectedKeys={[pathname]}
+          items={items}
         />
       </Sider>
       <Layout className="main">
@@ -67,10 +93,10 @@ const AppLayout: React.FC = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-          Content
+          <Outlet />
         </Content>
-        <Footer style={{ textAlign: "center", backgroundColor: "white" }}>
-          Soundwave ©{new Date().getFullYear()} Created by Ant UED
+        <Footer style={{ textAlign: "center", background: colorBgContainer }}>
+          Soundwave ©{new Date().getFullYear()} Created using Ant UED
         </Footer>
       </Layout>
     </Layout>
