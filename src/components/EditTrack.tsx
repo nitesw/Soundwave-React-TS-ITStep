@@ -15,13 +15,13 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { TrackFormFields, TrackModel } from "../models/music";
 import { GenreModel, GenreOption } from "../models/genres";
+import { musicService } from "../services/music.service";
 const { TextArea } = Input;
 
 type QueryParams = {
   id: string;
 };
 
-const musicApi = import.meta.env.VITE_MUSIC_API;
 const normFile = (e: any) => {
   return e?.file;
 };
@@ -35,26 +35,22 @@ const EditTrack = () => {
   const { id } = useParams<QueryParams>();
 
   useEffect(() => {
-    fetch(musicApi + "genres")
-      .then((res) => res.json())
-      .then((data) => {
-        const items = data as GenreModel[];
-        setGenres(
-          items.map((x) => {
-            return { label: x.name, value: x.id };
-          })
-        );
-      });
+    musicService.getGenres().then((res) => {
+      const items = res.data as GenreModel[];
+      setGenres(
+        items.map((x) => ({
+          label: x.name,
+          value: x.id,
+        }))
+      );
+    });
 
     setLoading(true);
-    fetch(musicApi + "getTrack?id=" + id)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setTrack(data);
-        form.setFieldsValue(data);
-        setLoading(false);
-      });
+    musicService.getTrack(id!).then((res) => {
+      setTrack(res.data as TrackModel);
+      form.setFieldsValue(res.data as TrackModel);
+      setLoading(false);
+    });
   }, []);
 
   const [selectedGenre, setSelectedGenre] = useState(1);
@@ -83,21 +79,23 @@ const EditTrack = () => {
     entity.append("isArchived", false.toString());
     console.log(entity);
 
-    fetch(musicApi + "edit", {
-      method: "PUT",
-      body: entity,
-    }).then((res) => {
-      if (res.status === 200) {
-        message.success("Track edited successfully!");
-        navigate(-1);
-      } else {
-        res.json().then((res) => {
+    musicService
+      .editTrack(entity)
+      .then((res) => {
+        if (res.status === 200) {
+          message.success("Track edited successfully!");
+          navigate(-1);
+        } else {
           setLoading(false);
-          const msg = res.errors[Object.keys(res.errors)[0]][0];
+          const msg = res.data.errors[Object.keys(res.data.errors)[0]][0];
           message.error(msg);
-        });
-      }
-    });
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error editing track:", error);
+        message.error("An error occurred while creating the track.");
+      });
   };
 
   return (

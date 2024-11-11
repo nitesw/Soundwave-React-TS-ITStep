@@ -15,9 +15,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import { TrackFormFields } from "../models/music";
 import { GenreModel, GenreOption } from "../models/genres";
+import { musicService } from "../services/music.service";
 const { TextArea } = Input;
 
-const musicApi = import.meta.env.VITE_MUSIC_API;
 const normFile = (e: any) => {
   return e?.file;
 };
@@ -28,16 +28,15 @@ const CreateTrack = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    fetch(musicApi + "genres")
-      .then((res) => res.json())
-      .then((data) => {
-        const items = data as GenreModel[];
-        setGenres(
-          items.map((x) => {
-            return { label: x.name, value: x.id };
-          })
-        );
-      });
+    musicService.getGenres().then((res) => {
+      const items = res.data as GenreModel[];
+      setGenres(
+        items.map((x) => ({
+          label: x.name,
+          value: x.id,
+        }))
+      );
+    });
   }, []);
 
   const [selectedGenre, setSelectedGenre] = useState(1);
@@ -67,21 +66,23 @@ const CreateTrack = () => {
     entity.append("isArchived", false.toString());
     console.log(entity);
 
-    fetch(musicApi + "create", {
-      method: "POST",
-      body: entity,
-    }).then((res) => {
-      if (res.status === 200) {
-        message.success("Track created successfully!");
-        navigate(-1);
-      } else {
-        res.json().then((res) => {
+    musicService
+      .createTrack(entity)
+      .then((res) => {
+        if (res.status === 200) {
+          message.success("Track created successfully!");
+          navigate(-1);
+        } else {
           setLoading(false);
-          const msg = res.errors[Object.keys(res.errors)[0]][0];
+          const msg = res.data.errors[Object.keys(res.data.errors)[0]][0];
           message.error(msg);
-        });
-      }
-    });
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error("Error creating track:", error);
+        message.error("An error occurred while creating the track.");
+      });
   };
 
   return (

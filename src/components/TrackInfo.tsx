@@ -3,9 +3,8 @@ import { Button, Flex, Image, Skeleton, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TrackModel } from "../models/music";
-
-const serverUrl = import.meta.env.VITE_SERVER_URL;
-const musicApi = import.meta.env.VITE_MUSIC_API;
+import { serverUrlService } from "../services/server.url.service";
+import { musicService } from "../services/music.service";
 
 type Params = {
   id: string;
@@ -17,9 +16,9 @@ export default function TrackInfo() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(musicApi + "getTrack?id=" + id)
-      .then((res) => res.json())
-      .then((data) => setItem(data));
+    musicService.getTrack(id!).then((res) => {
+      setItem(res.data as TrackModel);
+    });
   }, []);
   function timeAgo(date: Date) {
     const seconds = Math.floor(
@@ -67,7 +66,7 @@ export default function TrackInfo() {
             <Image
               style={{ borderRadius: "5px" }}
               width={300}
-              src={serverUrl + item.imgUrl}
+              src={serverUrlService.getUrl() + item.imgUrl}
             />
             <div style={{ marginLeft: "16px", width: "100%" }}>
               <Flex justify="space-between">

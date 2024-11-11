@@ -16,12 +16,13 @@ import {
   InfoCircleOutlined,
   StarOutlined,
 } from "@ant-design/icons";
-import { musicService } from "../services/music.service";
 import { Link } from "react-router-dom";
 import { TrackModel } from "../models/music";
-import { serverUrlService } from "../services/server.url.service";
 
-const MusicTable = () => {
+const serverUrl = import.meta.env.VITE_SERVER_URL;
+const musicApi = import.meta.env.VITE_MUSIC_API;
+
+const PlaylistsTable = () => {
   const [music, setMusic] = useState<TrackModel[]>([]);
 
   const columns: TableProps<TrackModel>["columns"] = [
@@ -35,11 +36,7 @@ const MusicTable = () => {
       dataIndex: "imgUrl",
       key: "image",
       render: (_, item) => (
-        <img
-          height="50"
-          src={serverUrlService.getUrl() + item.imgUrl}
-          alt={item.title}
-        />
+        <img height="50" src={serverUrl + item.imgUrl} alt={item.title} />
       ),
     },
     {
@@ -113,14 +110,16 @@ const MusicTable = () => {
   ];
 
   useEffect(() => {
-    musicService.getAll().then((response) => {
-      // console.log(response);
-      setMusic(response.data as TrackModel[]);
-    });
+    fetch(musicApi + "all")
+      .then((res) => res.json())
+      .then((data: TrackModel[]) => {
+        setMusic(data);
+      });
   }, []);
-
   const deleteItem = (id: number) => {
-    musicService.deleteTrack(id).then((res) => {
+    fetch(musicApi + "delete?id=" + id, {
+      method: "DELETE",
+    }).then((res) => {
       if (res.status === 200) {
         setMusic(music.filter((x) => x.id !== id));
         message.success("Track deleted successfuly!");
@@ -147,4 +146,4 @@ const MusicTable = () => {
     </>
   );
 };
-export default MusicTable;
+export default PlaylistsTable;

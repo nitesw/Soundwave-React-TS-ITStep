@@ -3,6 +3,7 @@ import {
   BarsOutlined,
   HomeOutlined,
   MenuFoldOutlined,
+  MenuOutlined,
   MenuUnfoldOutlined,
   StarOutlined,
 } from "@ant-design/icons";
@@ -27,6 +28,15 @@ const items = [
     icon: (
       <Link to="/music" draggable="false">
         <BarsOutlined />
+      </Link>
+    ),
+  },
+  {
+    key: "/playlists",
+    label: "Playlists",
+    icon: (
+      <Link to="/playlists" draggable="false">
+        <MenuOutlined />
       </Link>
     ),
   },
