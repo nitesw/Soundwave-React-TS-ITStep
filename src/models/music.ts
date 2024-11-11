@@ -13,3 +13,16 @@ export interface TrackModel {
   genreName?: string;
   userId?: string;
 }
+
+export type TrackFormFields = {
+  title: string;
+  description?: string | null;
+  track: File;
+  image: File;
+  isPublic: boolean;
+  isArchived: boolean;
+  additionalTags?: string;
+  artistName?: string;
+  genreId: number;
+  userId?: string;
+};
