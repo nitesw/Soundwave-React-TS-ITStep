@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-  BarsOutlined,
+  CustomerServiceOutlined,
   HomeOutlined,
   MenuFoldOutlined,
   MenuOutlined,
@@ -27,7 +27,7 @@ const items = [
     label: "Music",
     icon: (
       <Link to="/music" draggable="false">
-        <BarsOutlined />
+        <CustomerServiceOutlined />
       </Link>
     ),
   },
