@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Button,
-  ConfigProvider,
   message,
   Popconfirm,
   Space,
@@ -14,18 +13,16 @@ import {
   DeleteOutlined,
   EditOutlined,
   InfoCircleOutlined,
-  StarOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { TrackModel } from "../models/music";
-
-const serverUrl = import.meta.env.VITE_SERVER_URL;
-const musicApi = import.meta.env.VITE_MUSIC_API;
+import { serverUrlService } from "../services/server.url.service";
+import { PlaylistModel } from "../models/playlists";
+import { playlistsService } from "../services/playlists.service";
 
 const PlaylistsTable = () => {
-  const [music, setMusic] = useState<TrackModel[]>([]);
+  const [playlists, setPlaylists] = useState<PlaylistModel[]>([]);
 
-  const columns: TableProps<TrackModel>["columns"] = [
+  const columns: TableProps<PlaylistModel>["columns"] = [
     {
       title: "#",
       dataIndex: "id",
@@ -36,7 +33,11 @@ const PlaylistsTable = () => {
       dataIndex: "imgUrl",
       key: "image",
       render: (_, item) => (
-        <img height="50" src={serverUrl + item.imgUrl} alt={item.title} />
+        <img
+          height="50"
+          src={serverUrlService.getUrl() + item.imgUrl}
+          alt={item.title}
+        />
       ),
     },
     {
@@ -45,55 +46,33 @@ const PlaylistsTable = () => {
       key: "title",
     },
     {
-      title: "Visibility",
-      dataIndex: "isPublic",
-      key: "visibility",
-      render: (text) =>
-        text === true ? (
-          <Tag color="green">Public</Tag>
+      title: "Track Count",
+      dataIndex: "tracks",
+      key: "tracks",
+      render: (_, item) =>
+        item.tracks?.length! > 0 ? (
+          <Tag color="green">{item.tracks?.length}</Tag>
         ) : (
-          <Tag color="volcano">Private</Tag>
+          <Tag color="volcano">{item.tracks?.length}</Tag>
         ),
     },
     {
-      title: "Genre",
-      dataIndex: "genreName",
-      key: "genre",
-    },
-    {
-      title: "Upload Date",
-      key: "uploadDate",
-      dataIndex: "uploadDate",
-      render: (date) => (
-        <p>
-          {new Date(date).getDate() < 10
-            ? "0" + new Date(date).getDate()
-            : new Date(date).getDate()}
-          .
-          {new Date(date).getMonth() + 1 < 10
-            ? "0" + (new Date(date).getMonth() + 1)
-            : new Date(date).getMonth() + 1}
-          .{new Date(date).getFullYear()}
-        </p>
-      ),
-    },
-    {
-      title: "Action",
+      title: "Actions",
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Link to={`/music/${record.id}`}>
+          <Link to={`/playlists/${record.id}`}>
             <Button
               color="primary"
               variant="filled"
               icon={<InfoCircleOutlined />}
             />
           </Link>
-          <Link to={`/music/edit/${record.id}`}>
+          <Link to={`/playlists/edit/${record.id}`}>
             <Button color="default" variant="filled" icon={<EditOutlined />} />
           </Link>
           <Popconfirm
-            title="Delete the track"
+            title="Delete the playlist"
             description={`Are you sure you want to delete ${record.title}?`}
             onConfirm={() => deleteItem(record.id)}
             okText="Yes"
@@ -101,28 +80,22 @@ const PlaylistsTable = () => {
           >
             <Button color="danger" variant="filled" icon={<DeleteOutlined />} />
           </Popconfirm>
-          <ConfigProvider theme={{ token: { colorPrimary: "#fa8c16" } }}>
-            <Button color="primary" variant="filled" icon={<StarOutlined />} />
-          </ConfigProvider>
         </Space>
       ),
     },
   ];
 
   useEffect(() => {
-    fetch(musicApi + "all")
-      .then((res) => res.json())
-      .then((data: TrackModel[]) => {
-        setMusic(data);
-      });
+    playlistsService.getAll().then((response) => {
+      setPlaylists(response.data as PlaylistModel[]);
+    });
   }, []);
+
   const deleteItem = (id: number) => {
-    fetch(musicApi + "delete?id=" + id, {
-      method: "DELETE",
-    }).then((res) => {
+    playlistsService.deletePlaylist(id).then((res) => {
       if (res.status === 200) {
-        setMusic(music.filter((x) => x.id !== id));
-        message.success("Track deleted successfuly!");
+        setPlaylists(playlists.filter((x) => x.id !== id));
+        message.success("Playlist deleted successfuly!");
       } else {
         message.error("Something went wrong!");
       }
@@ -131,18 +104,18 @@ const PlaylistsTable = () => {
 
   return (
     <>
-      <Link to="/music/create">
+      <Link to="/playlists/create">
         <Button
           color="primary"
           icon={<AppstoreAddOutlined />}
           variant="filled"
           style={{ marginBottom: "16px" }}
         >
-          Create new track
+          Create new playlist
         </Button>
       </Link>
 
-      <Table columns={columns} dataSource={music} rowKey="id" />
+      <Table columns={columns} dataSource={playlists} rowKey="id" />
     </>
   );
 };

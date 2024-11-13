@@ -104,7 +104,19 @@ const CreateTrack = () => {
           onFinish={onSubmit}
           autoComplete="off"
         >
-          <Form.Item<TrackFormFields> label="Title" name="title" required>
+          <Form.Item<TrackFormFields>
+            label="Title"
+            name="title"
+            required
+            rules={[
+              {
+                required: true,
+                message: "Title must be at least 3 symbols long!",
+                min: 3,
+                max: 100,
+              },
+            ]}
+          >
             <Input placeholder="Enter the title..." maxLength={100} />
           </Form.Item>
 
@@ -115,6 +127,12 @@ const CreateTrack = () => {
               style={{ width: "100%" }}
               getValueFromEvent={normFile}
               required
+              rules={[
+                {
+                  required: true,
+                  message: "Image is required!",
+                },
+              ]}
             >
               <Upload
                 maxCount={1}
@@ -135,6 +153,12 @@ const CreateTrack = () => {
               style={{ width: "100%" }}
               getValueFromEvent={normFile}
               required
+              rules={[
+                {
+                  required: true,
+                  message: "Track is required!",
+                },
+              ]}
             >
               <Upload
                 maxCount={1}

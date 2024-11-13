@@ -1,3 +1,5 @@
+import { PlaylistModel } from "./playlists";
+
 export interface TrackModel {
   id: number;
   title: string;
@@ -12,6 +14,7 @@ export interface TrackModel {
   genreId: number;
   genreName?: string;
   userId?: string;
+  playlists?: PlaylistModel[];
 }
 
 export type TrackFormFields = {

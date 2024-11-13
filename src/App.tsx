@@ -6,6 +6,12 @@ import TrackInfo from "./components/TrackInfo";
 import CreateTrack from "./components/CreateTrack";
 import EditTrack from "./components/EditTrack";
 import PlaylistsTable from "./components/PlaylistsTable";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import Profile from "./components/Profile";
+import CreatePlaylist from "./components/CreatePlaylist";
+import PlaylistInfo from "./components/PlaylistInfo";
+import EditPlaylist from "./components/EditPlaylist";
 
 function App() {
   return (
@@ -13,7 +19,13 @@ function App() {
       <Route path="/" element={<AppLayout />}>
         <Route index element={<p>Home page</p>} />
         <Route path="/music" element={<MusicTable />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/playlists" element={<PlaylistsTable />} />
+        <Route path="/playlists/create" element={<CreatePlaylist />} />
+        <Route path="/playlists/:id" element={<PlaylistInfo />} />
+        <Route path="/playlists/edit/:id" element={<EditPlaylist />} />
         <Route path="/music/:id" element={<TrackInfo />} />
         <Route path="/music/edit/:id" element={<EditTrack />} />
         <Route path="/music/create" element={<CreateTrack />} />

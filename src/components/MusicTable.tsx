@@ -81,7 +81,7 @@ const MusicTable = () => {
       ),
     },
     {
-      title: "Action",
+      title: "Actions",
       key: "action",
       render: (_, record) => (
         <Space size="middle">

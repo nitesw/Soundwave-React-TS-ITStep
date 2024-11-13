@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import {
   CustomerServiceOutlined,
   HomeOutlined,
+  LoginOutlined,
   MenuFoldOutlined,
   MenuOutlined,
   MenuUnfoldOutlined,
   StarOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
 import { Footer } from "antd/es/layout/layout";
@@ -56,6 +58,8 @@ const AppLayout: React.FC = () => {
   const [current] = useState(() => {
     return location.pathname.startsWith("/music")
       ? "/music"
+      : location.pathname.startsWith("/playlists")
+      ? "/playlists"
       : location.pathname;
   });
 
@@ -81,7 +85,14 @@ const AppLayout: React.FC = () => {
         />
       </Sider>
       <Layout className="main">
-        <Header style={{ padding: 0, background: colorBgContainer }}>
+        <Header
+          style={{
+            padding: 0,
+            background: colorBgContainer,
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -92,6 +103,32 @@ const AppLayout: React.FC = () => {
               height: 64,
             }}
           />
+          <div>
+            <Link to="/login">
+              <Button
+                type="text"
+                icon={<LoginOutlined />}
+                style={{
+                  fontSize: "16px",
+                  height: 64,
+                }}
+              >
+                Login
+              </Button>
+            </Link>
+            <Link to="/register">
+              <Button
+                type="text"
+                icon={<UserAddOutlined />}
+                style={{
+                  fontSize: "16px",
+                  height: 64,
+                }}
+              >
+                Register
+              </Button>
+            </Link>
+          </div>
         </Header>
         <Content
           className="Content"

@@ -120,7 +120,19 @@ const EditTrack = () => {
         >
           <Form.Item name="id" hidden></Form.Item>
           <Form.Item name="uploadDate" hidden></Form.Item>
-          <Form.Item<TrackFormFields> label="Title" name="title" required>
+          <Form.Item<TrackFormFields>
+            label="Title"
+            name="title"
+            required
+            rules={[
+              {
+                required: true,
+                message: "Title must be at least 3 symbols long!",
+                min: 3,
+                max: 100,
+              },
+            ]}
+          >
             <Input placeholder="Enter the title..." maxLength={100} />
           </Form.Item>
 
