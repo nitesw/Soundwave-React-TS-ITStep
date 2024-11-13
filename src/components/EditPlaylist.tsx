@@ -2,20 +2,15 @@ import { useEffect, useState } from "react";
 import { LeftCircleOutlined, UploadOutlined } from "@ant-design/icons";
 import {
   Button,
-  Checkbox,
   Form,
   FormProps,
   Input,
   message,
-  Select,
   Space,
   Spin,
   Upload,
 } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
-import { TrackFormFields, TrackModel } from "../models/music";
-import { GenreModel, GenreOption } from "../models/genres";
-import { musicService } from "../services/music.service";
 import { PlaylistFormFields, PlaylistModel } from "../models/playlists";
 import { playlistsService } from "../services/playlists.service";
 const { TextArea } = Input;
