@@ -12,6 +12,7 @@ import Profile from "./components/Profile";
 import CreatePlaylist from "./components/CreatePlaylist";
 import PlaylistInfo from "./components/PlaylistInfo";
 import EditPlaylist from "./components/EditPlaylist";
+import UsersTable from "./components/UsersTable";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route index element={<p>Home page</p>} />
         <Route path="/music" element={<MusicTable />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/users" element={<UsersTable />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/playlists" element={<PlaylistsTable />} />

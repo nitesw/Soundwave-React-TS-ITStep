@@ -8,6 +8,7 @@ import {
   MenuUnfoldOutlined,
   StarOutlined,
   UserAddOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 import { Button, Layout, Menu, theme } from "antd";
 import { Footer } from "antd/es/layout/layout";
@@ -39,6 +40,15 @@ const items = [
     icon: (
       <Link to="/playlists" draggable="false">
         <MenuOutlined />
+      </Link>
+    ),
+  },
+  {
+    key: "/users",
+    label: "Users",
+    icon: (
+      <Link to="/users" draggable="false">
+        <UserOutlined />
       </Link>
     ),
   },
@@ -104,18 +114,6 @@ const AppLayout: React.FC = () => {
             }}
           />
           <div>
-            <Link to="/login">
-              <Button
-                type="text"
-                icon={<LoginOutlined />}
-                style={{
-                  fontSize: "16px",
-                  height: 64,
-                }}
-              >
-                Login
-              </Button>
-            </Link>
             <Link to="/register">
               <Button
                 type="text"
@@ -126,6 +124,18 @@ const AppLayout: React.FC = () => {
                 }}
               >
                 Register
+              </Button>
+            </Link>
+            <Link to="/login">
+              <Button
+                type="text"
+                icon={<LoginOutlined />}
+                style={{
+                  fontSize: "16px",
+                  height: 64,
+                }}
+              >
+                Login
               </Button>
             </Link>
           </div>
