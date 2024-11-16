@@ -2,7 +2,6 @@ import { LeftCircleOutlined } from "@ant-design/icons";
 import { Button, Flex, Image, Skeleton, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { serverUrlService } from "../services/server.url.service";
 import { PlaylistModel } from "../models/playlists";
 import { playlistsService } from "../services/playlists.service";
 

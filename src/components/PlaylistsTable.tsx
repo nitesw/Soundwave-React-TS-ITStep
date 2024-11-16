@@ -15,7 +15,6 @@ import {
   InfoCircleOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { serverUrlService } from "../services/server.url.service";
 import { PlaylistModel } from "../models/playlists";
 import { playlistsService } from "../services/playlists.service";
 

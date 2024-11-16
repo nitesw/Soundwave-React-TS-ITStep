@@ -19,7 +19,6 @@ import {
 import { musicService } from "../services/music.service";
 import { Link } from "react-router-dom";
 import { TrackModel } from "../models/music";
-import { serverUrlService } from "../services/server.url.service";
 
 const MusicTable = () => {
   const [music, setMusic] = useState<TrackModel[]>([]);

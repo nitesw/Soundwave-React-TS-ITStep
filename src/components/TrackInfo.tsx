@@ -3,7 +3,6 @@ import { Button, Flex, Image, Skeleton, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TrackModel } from "../models/music";
-import { serverUrlService } from "../services/server.url.service";
 import { musicService } from "../services/music.service";
 
 type Params = {
