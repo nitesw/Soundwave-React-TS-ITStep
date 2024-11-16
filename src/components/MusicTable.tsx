@@ -37,7 +37,7 @@ const MusicTable = () => {
       render: (_, item) => (
         <img
           height="50"
-          src={serverUrlService.getUrl() + item.imgUrl}
+          src={item.imgUrl}
           alt={item.title}
         />
       ),

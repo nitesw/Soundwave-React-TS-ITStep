@@ -66,7 +66,7 @@ export default function TrackInfo() {
             <Image
               style={{ borderRadius: "5px" }}
               width={300}
-              src={serverUrlService.getUrl() + item.imgUrl}
+              src={item.imgUrl}
             />
             <div style={{ marginLeft: "16px", width: "100%" }}>
               <Flex justify="space-between">

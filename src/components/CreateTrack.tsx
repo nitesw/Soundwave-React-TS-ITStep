@@ -97,7 +97,7 @@ const CreateTrack = () => {
         <h1>Create new track</h1>
         <Form
           labelCol={{
-            span: 6,
+            span: 8,
           }}
           style={{ width: "100%" }}
           layout="vertical"
