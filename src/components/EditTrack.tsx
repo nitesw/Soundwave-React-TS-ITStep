@@ -16,6 +16,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { TrackFormFields, TrackModel } from "../models/music";
 import { GenreModel, GenreOption } from "../models/genres";
 import { musicService } from "../services/music.service";
+import { tokenService } from "../services/token.service";
 const { TextArea } = Input;
 
 type QueryParams = {
@@ -68,6 +69,8 @@ const EditTrack = () => {
           entity.append(key, false.toString());
         } else if (key === "genreId") {
           entity.append(key, selectedGenre.toString());
+        } else if (key === "userId") {
+          entity.append(key, tokenService.getPayload()?.id as string);
         } else {
           entity.append(key, "");
         }
@@ -110,7 +113,7 @@ const EditTrack = () => {
         <h1>Edit track</h1>
         <Form
           labelCol={{
-            span: 6,
+            span: 8,
           }}
           style={{ width: "100%" }}
           layout="vertical"
@@ -118,8 +121,9 @@ const EditTrack = () => {
           form={form}
           autoComplete="off"
         >
-          <Form.Item name="id" hidden></Form.Item>
-          <Form.Item name="uploadDate" hidden></Form.Item>
+          <Form.Item<TrackFormFields> name="id" hidden></Form.Item>
+          <Form.Item<TrackFormFields> name="uploadDate" hidden></Form.Item>
+          <Form.Item<TrackFormFields> name="userId" hidden></Form.Item>
           <Form.Item<TrackFormFields>
             label="Title"
             name="title"

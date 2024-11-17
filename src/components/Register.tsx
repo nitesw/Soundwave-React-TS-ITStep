@@ -37,7 +37,7 @@ const Register: React.FC = () => {
       <Spin spinning={loading}>
         {tokenService.isAuthenticated() ? (
           <div>
-            <h2>Redirecting to Profile...</h2>
+            <h2 style={{ fontWeight: "normal" }}>Redirecting to Profile...</h2>
           </div>
         ) : (
           <div>

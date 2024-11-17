@@ -15,7 +15,7 @@ export default function Profile() {
     <div>Profile page</div>
   ) : (
     <div>
-      <h2>Redirecting to Login page...</h2>
+      <h2 style={{ fontWeight: "normal" }}>Redirecting to Login page...</h2>
     </div>
   );
 }

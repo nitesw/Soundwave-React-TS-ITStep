@@ -19,6 +19,7 @@ import {
 import { musicService } from "../services/music.service";
 import { Link } from "react-router-dom";
 import { TrackModel } from "../models/music";
+import "../App.css";
 
 const MusicTable = () => {
   const [music, setMusic] = useState<TrackModel[]>([]);
@@ -35,7 +36,8 @@ const MusicTable = () => {
       key: "image",
       render: (_, item) => (
         <img
-          height="50"
+          className="square-image"
+          style={{ height: "50px", width: "50px" }}
           src={item.imgUrl}
           alt={item.title}
         />

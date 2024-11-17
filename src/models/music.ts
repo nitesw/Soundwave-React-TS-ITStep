@@ -14,10 +14,13 @@ export interface TrackModel {
   genreId: number;
   genreName?: string;
   userId?: string;
+  userName?: string;
   playlists?: PlaylistModel[];
 }
 
 export type TrackFormFields = {
+  id?: number,
+  uploadDate?: Date;
   title: string;
   description?: string | null;
   track: File;
@@ -27,5 +30,5 @@ export type TrackFormFields = {
   additionalTags?: string;
   artistName?: string;
   genreId: number;
-  userId?: string;
+  userId: string;
 };

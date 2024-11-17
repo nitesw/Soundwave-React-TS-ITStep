@@ -13,12 +13,13 @@ import CreatePlaylist from "./components/CreatePlaylist";
 import PlaylistInfo from "./components/PlaylistInfo";
 import EditPlaylist from "./components/EditPlaylist";
 import UsersTable from "./components/UsersTable";
+import HomePage from "./components/HomePage";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<AppLayout />}>
-        <Route index element={<p>Home page</p>} />
+        <Route index element={<HomePage />} />
         <Route path="/music" element={<MusicTable />} />
         <Route path="/login" element={<Login />} />
         <Route path="/users" element={<UsersTable />} />

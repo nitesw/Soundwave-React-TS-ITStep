@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { TrackFormFields } from "../models/music";
 import { GenreModel, GenreOption } from "../models/genres";
 import { musicService } from "../services/music.service";
+import { tokenService } from "../services/token.service";
 const { TextArea } = Input;
 
 const normFile = (e: any) => {
@@ -42,7 +43,6 @@ const CreateTrack = () => {
   const [selectedGenre, setSelectedGenre] = useState(1);
   const onSubmit: FormProps<TrackFormFields>["onFinish"] = (item) => {
     setLoading(true);
-    console.log(item);
     const entity = new FormData();
     Object.keys(item).forEach((key) => {
       const typedKey = key as keyof TrackFormFields;
@@ -54,6 +54,8 @@ const CreateTrack = () => {
           entity.append(key, false.toString());
         } else if (key === "genreId") {
           entity.append(key, selectedGenre.toString());
+        } else if (key === "userId") {
+          entity.append(key, tokenService.getPayload()?.id as string);
         } else {
           entity.append(key, "");
         }
@@ -64,7 +66,9 @@ const CreateTrack = () => {
     });
 
     entity.append("isArchived", false.toString());
-    console.log(entity);
+
+    // entity.append("userId", "sup");
+    console.log("FormData:", entity.get("userId"));
 
     musicService
       .createTrack(entity)
@@ -104,6 +108,7 @@ const CreateTrack = () => {
           onFinish={onSubmit}
           autoComplete="off"
         >
+          <Form.Item<TrackFormFields> name="userId" hidden></Form.Item>
           <Form.Item<TrackFormFields>
             label="Title"
             name="title"

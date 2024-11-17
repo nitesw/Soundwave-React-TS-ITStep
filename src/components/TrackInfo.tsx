@@ -1,5 +1,5 @@
 import { LeftCircleOutlined } from "@ant-design/icons";
-import { Button, Flex, Image, Skeleton, Tag } from "antd";
+import { Button, Flex, Skeleton, Tag } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { TrackModel } from "../models/music";
@@ -62,19 +62,25 @@ export default function TrackInfo() {
       {item ? (
         <div>
           <Flex style={{ padding: "16px" }}>
-            <Image
-              style={{ borderRadius: "5px" }}
-              width={300}
+            <img
+              style={{ borderRadius: "6px", width: "300px" }}
+              className="square-image"
               src={item.imgUrl}
+              alt={item.title}
+              draggable="false"
             />
             <div style={{ marginLeft: "16px", width: "100%" }}>
               <Flex justify="space-between">
                 <div>
-                  <h2 style={{ margin: "0" }}>{item.title}</h2>
-                  <h3 style={{ margin: "0" }}>{item.genreName}</h3>
+                  <h2 style={{ margin: "0", fontWeight: "normal" }}>
+                    {item.title}
+                  </h2>
+                  <h3 style={{ margin: "0", fontWeight: "normal" }}>
+                    {item.genreName}
+                  </h3>
                 </div>
                 <div>
-                  <h3 style={{ margin: "0" }}>
+                  <h3 style={{ margin: "0", fontWeight: "normal" }}>
                     <Tag>{timeAgo(item.uploadDate)}</Tag>
                   </h3>
                 </div>
