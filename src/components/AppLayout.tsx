@@ -3,6 +3,7 @@ import {
   CustomerServiceOutlined,
   HomeOutlined,
   LoginOutlined,
+  LogoutOutlined,
   MenuFoldOutlined,
   MenuOutlined,
   MenuUnfoldOutlined,
@@ -10,9 +11,11 @@ import {
   UserAddOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Layout, Menu, theme } from "antd";
+import { Button, Layout, Menu, message, theme } from "antd";
 import { Footer } from "antd/es/layout/layout";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { tokenService } from "../services/token.service";
+import { useAccountContext } from "../contexts/accounts.context";
 
 const { Header, Sider, Content } = Layout;
 const items = [
@@ -64,6 +67,8 @@ const items = [
 ];
 
 const AppLayout: React.FC = () => {
+  const { clear } = useAccountContext();
+
   const location = useLocation();
   const [current] = useState(() => {
     return location.pathname.startsWith("/music")
@@ -77,6 +82,12 @@ const AppLayout: React.FC = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  const logout = () => {
+    tokenService.logout();
+    clear();
+    message.success("Successfully logged out!");
+  };
 
   return (
     <Layout className="AppLayout">
@@ -113,32 +124,60 @@ const AppLayout: React.FC = () => {
               height: 64,
             }}
           />
-          <div>
-            <Link to="/register">
+          {tokenService.isAuthenticated() ? (
+            <div>
+              <Link to="/profile">
+                <Button
+                  type="text"
+                  icon={<UserOutlined />}
+                  style={{
+                    fontSize: "16px",
+                    height: 64,
+                  }}
+                >
+                  Profile
+                </Button>
+              </Link>
               <Button
                 type="text"
-                icon={<UserAddOutlined />}
+                icon={<LogoutOutlined />}
                 style={{
                   fontSize: "16px",
                   height: 64,
                 }}
+                onClick={logout}
               >
-                Register
+                Logout
               </Button>
-            </Link>
-            <Link to="/login">
-              <Button
-                type="text"
-                icon={<LoginOutlined />}
-                style={{
-                  fontSize: "16px",
-                  height: 64,
-                }}
-              >
-                Login
-              </Button>
-            </Link>
-          </div>
+            </div>
+          ) : (
+            <div>
+              <Link to="/register">
+                <Button
+                  type="text"
+                  icon={<UserAddOutlined />}
+                  style={{
+                    fontSize: "16px",
+                    height: 64,
+                  }}
+                >
+                  Register
+                </Button>
+              </Link>
+              <Link to="/login">
+                <Button
+                  type="text"
+                  icon={<LoginOutlined />}
+                  style={{
+                    fontSize: "16px",
+                    height: 64,
+                  }}
+                >
+                  Login
+                </Button>
+              </Link>
+            </div>
+          )}
         </Header>
         <Content
           className="Content"

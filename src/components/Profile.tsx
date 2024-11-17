@@ -1,3 +1,21 @@
+import { useNavigate } from "react-router-dom";
+import { tokenService } from "../services/token.service";
+import { useEffect } from "react";
+import { useAccountContext } from "../contexts/accounts.context";
+
 export default function Profile() {
-  return <div>Profile</div>;
+  const navigate = useNavigate();
+  const { account } = useAccountContext();
+
+  useEffect(() => {
+    if (!tokenService.isAuthenticated()) navigate("/login");
+  }, [navigate, account]);
+
+  return tokenService.isAuthenticated() ? (
+    <div>Profile page</div>
+  ) : (
+    <div>
+      <h2>Redirecting to Login page...</h2>
+    </div>
+  );
 }
