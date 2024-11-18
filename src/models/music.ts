@@ -14,12 +14,12 @@ export interface TrackModel {
   genreId: number;
   genreName?: string;
   userId?: string;
-  userName?: string;
+  userUserName?: string;
   playlists?: PlaylistModel[];
 }
 
 export type TrackFormFields = {
-  id?: number,
+  id?: number;
   uploadDate?: Date;
   title: string;
   description?: string | null;

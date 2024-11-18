@@ -7,13 +7,10 @@ export const tokenService = {
   save(accessToken: string) {
     localStorage.setItem(accessTokenKey, accessToken);
   },
-  isAuthenticated(): boolean {
-    return localStorage.getItem(accessTokenKey) !== null;
-  },
   get(): string | null {
     return localStorage.getItem(accessTokenKey);
   },
-  logout() {
+  clear() {
     localStorage.removeItem(accessTokenKey);
   },
   getPayload(): TokenPayload | null {

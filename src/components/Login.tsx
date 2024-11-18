@@ -12,12 +12,6 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (tokenService.isAuthenticated()) {
-      navigate("/profile");
-    }
-  }, [navigate]);
-
   const onFinish: FormProps<LoginFields>["onFinish"] = (values) => {
     setLoading(true);
     accountsService
@@ -40,56 +34,50 @@ const Login: React.FC = () => {
   return (
     <>
       <Spin spinning={loading}>
-        {tokenService.isAuthenticated() ? (
-          <div>
-            <h2>Redirecting to Profile...</h2>
-          </div>
-        ) : (
-          <div>
-            <h1 style={{ textAlign: "center" }}>Log in to Your Account</h1>
-            <Form
-              name="basic"
-              layout="vertical"
-              initialValues={{ remember: true }}
-              onFinish={onFinish}
-              autoComplete="off"
+        <div>
+          <h1 style={{ textAlign: "center" }}>Log in to Your Account</h1>
+          <Form
+            name="basic"
+            layout="vertical"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            autoComplete="off"
+          >
+            <Form.Item<LoginFields>
+              label="Username"
+              name="userName"
+              rules={[
+                {
+                  required: true,
+                  min: 5,
+                  message: "Username must be at least 5 characters long!",
+                },
+              ]}
             >
-              <Form.Item<LoginFields>
-                label="Username"
-                name="userName"
-                rules={[
-                  {
-                    required: true,
-                    min: 5,
-                    message: "Username must be at least 5 characters long!",
-                  },
-                ]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item<LoginFields>
-                label="Password"
-                name="password"
-                rules={[
-                  { required: true, message: "Please input your password!" },
-                ]}
-              >
-                <Input.Password />
-              </Form.Item>
+              <Input />
+            </Form.Item>
+            <Form.Item<LoginFields>
+              label="Password"
+              name="password"
+              rules={[
+                { required: true, message: "Please input your password!" },
+              ]}
+            >
+              <Input.Password />
+            </Form.Item>
 
-              <Link to="/register">
-                <div style={{ textAlign: "center", margin: "16px" }}>
-                  Don't have an account? Sign up now!
-                </div>
-              </Link>
-              <Form.Item style={{ textAlign: "center" }}>
-                <Button type="primary" htmlType="submit">
-                  Login
-                </Button>
-              </Form.Item>
-            </Form>
-          </div>
-        )}
+            <Link to="/register">
+              <div style={{ textAlign: "center", margin: "16px" }}>
+                Don't have an account? Sign up now!
+              </div>
+            </Link>
+            <Form.Item style={{ textAlign: "center" }}>
+              <Button type="primary" htmlType="submit">
+                Login
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
       </Spin>
     </>
   );

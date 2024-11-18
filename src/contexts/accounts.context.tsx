@@ -5,6 +5,7 @@ import { tokenService } from "../services/token.service";
 export type AccountContextType = {
   account: TokenPayload | null;
   clear: () => void;
+  isAuth: () => boolean;
   setAccount: (payload: TokenPayload | null) => void;
 };
 export const AccountContext = React.createContext<AccountContextType | null>(
@@ -19,8 +20,9 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
   const clear = () => {
     setAccount(null);
   };
+  const isAuth = () => account !== null;
   return (
-    <AccountContext.Provider value={{ account, setAccount, clear }}>
+    <AccountContext.Provider value={{ account, setAccount, clear, isAuth }}>
       {children}
     </AccountContext.Provider>
   );

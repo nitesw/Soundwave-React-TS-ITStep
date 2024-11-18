@@ -16,7 +16,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { TrackFormFields, TrackModel } from "../models/music";
 import { GenreModel, GenreOption } from "../models/genres";
 import { musicService } from "../services/music.service";
-import { tokenService } from "../services/token.service";
 const { TextArea } = Input;
 
 type QueryParams = {
@@ -69,8 +68,6 @@ const EditTrack = () => {
           entity.append(key, false.toString());
         } else if (key === "genreId") {
           entity.append(key, selectedGenre.toString());
-        } else if (key === "userId") {
-          entity.append(key, tokenService.getPayload()?.id as string);
         } else {
           entity.append(key, "");
         }

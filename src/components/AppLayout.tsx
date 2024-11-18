@@ -14,60 +14,61 @@ import {
 import { Button, Layout, Menu, message, theme } from "antd";
 import { Footer } from "antd/es/layout/layout";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { tokenService } from "../services/token.service";
 import { useAccountContext } from "../contexts/accounts.context";
+import { accountsService } from "../services/accounts.service";
 
 const { Header, Sider, Content } = Layout;
-const items = [
-  {
-    key: "/",
-    label: "Home",
-    icon: (
-      <Link to="/" draggable="false">
-        <HomeOutlined />
-      </Link>
-    ),
-  },
-  {
-    key: "/music",
-    label: "Music",
-    icon: (
-      <Link to="/music" draggable="false">
-        <CustomerServiceOutlined />
-      </Link>
-    ),
-  },
-  {
-    key: "/playlists",
-    label: "Playlists",
-    icon: (
-      <Link to="/playlists" draggable="false">
-        <MenuOutlined />
-      </Link>
-    ),
-  },
-  {
-    key: "/users",
-    label: "Users",
-    icon: (
-      <Link to="/users" draggable="false">
-        <UserOutlined />
-      </Link>
-    ),
-  },
-  {
-    key: "/favourites",
-    label: "Favourites",
-    icon: (
-      <Link to="/favourites" draggable="false">
-        <StarOutlined />
-      </Link>
-    ),
-  },
-];
 
 const AppLayout: React.FC = () => {
-  const { clear } = useAccountContext();
+  const { clear, isAuth } = useAccountContext();
+
+  const items = [
+    {
+      key: "/",
+      label: "Home",
+      icon: (
+        <Link to="/" draggable="false">
+          <HomeOutlined />
+        </Link>
+      ),
+    },
+    {
+      key: "/music",
+      label: "Music",
+      icon: (
+        <Link to="/music" draggable="false">
+          <CustomerServiceOutlined />
+        </Link>
+      ),
+    },
+    {
+      key: "/playlists",
+      label: "Playlists",
+      icon: (
+        <Link to="/playlists" draggable="false">
+          <MenuOutlined />
+        </Link>
+      ),
+    },
+    {
+      key: "/users",
+      label: "Users",
+      icon: (
+        <Link to="/users" draggable="false">
+          <UserOutlined />
+        </Link>
+      ),
+    },
+    {
+      key: "/favourites",
+      label: "Favourites",
+      icon: (
+        <Link to="/favourites" draggable="false">
+          <StarOutlined />
+        </Link>
+      ),
+    },
+  ];
 
   const location = useLocation();
   const [current] = useState(() => {
@@ -84,7 +85,7 @@ const AppLayout: React.FC = () => {
   } = theme.useToken();
 
   const logout = () => {
-    tokenService.logout();
+    accountsService.logout();
     clear();
     message.success("Successfully logged out!");
   };
@@ -124,7 +125,7 @@ const AppLayout: React.FC = () => {
               height: 64,
             }}
           />
-          {tokenService.isAuthenticated() ? (
+          {isAuth() ? (
             <div>
               <Link to="/profile">
                 <Button
