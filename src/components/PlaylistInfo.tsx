@@ -16,6 +16,8 @@ export default function PlaylistInfo() {
 
   useEffect(() => {
     playlistsService.getPlaylist(id!).then((res) => {
+      console.log(res.data);
+
       setItem(res.data as PlaylistModel);
     });
   }, []);

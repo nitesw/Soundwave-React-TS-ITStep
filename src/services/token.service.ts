@@ -30,6 +30,9 @@ export const tokenService = {
           payload[
             "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
           ],
+        role: payload[
+          "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+        ],
       };
     } catch (Error) {
       return null;

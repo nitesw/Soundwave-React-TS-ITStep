@@ -20,55 +20,113 @@ import { accountsService } from "../services/accounts.service";
 const { Header, Sider, Content } = Layout;
 
 const AppLayout: React.FC = () => {
-  const { clear, isAuth } = useAccountContext();
+  const { clear, isAuth, account } = useAccountContext();
+  let items = null;
+  const accountRole = account?.role;
+  if (isAuth()) {
+    console.log(accountRole);
 
-  const items = [
-    {
-      key: "/",
-      label: "Home",
-      icon: (
-        <Link to="/" draggable="false">
-          <HomeOutlined />
-        </Link>
-      ),
-    },
-    {
-      key: "/music",
-      label: "Music",
-      icon: (
-        <Link to="/music" draggable="false">
-          <CustomerServiceOutlined />
-        </Link>
-      ),
-    },
-    {
-      key: "/playlists",
-      label: "Playlists",
-      icon: (
-        <Link to="/playlists" draggable="false">
-          <MenuOutlined />
-        </Link>
-      ),
-    },
-    {
-      key: "/users",
-      label: "Users",
-      icon: (
-        <Link to="/users" draggable="false">
-          <UserOutlined />
-        </Link>
-      ),
-    },
-    {
-      key: "/favourites",
-      label: "Favourites",
-      icon: (
-        <Link to="/favourites" draggable="false">
-          <StarOutlined />
-        </Link>
-      ),
-    },
-  ];
+    if (accountRole === "admin") {
+      items = [
+        {
+          key: "/",
+          label: "Home",
+          icon: (
+            <Link to="/" draggable="false">
+              <HomeOutlined />
+            </Link>
+          ),
+        },
+        {
+          key: "/music",
+          label: "Music",
+          icon: (
+            <Link to="/music" draggable="false">
+              <CustomerServiceOutlined />
+            </Link>
+          ),
+        },
+        {
+          key: "/playlists",
+          label: "Playlists",
+          icon: (
+            <Link to="/playlists" draggable="false">
+              <MenuOutlined />
+            </Link>
+          ),
+        },
+        {
+          key: "/users",
+          label: "Users",
+          icon: (
+            <Link to="/users" draggable="false">
+              <UserOutlined />
+            </Link>
+          ),
+        },
+        {
+          key: "/favourites",
+          label: "Favourites",
+          icon: (
+            <Link to="/favourites" draggable="false">
+              <StarOutlined />
+            </Link>
+          ),
+        },
+      ];
+    } else {
+      items = [
+        {
+          key: "/",
+          label: "Home",
+          icon: (
+            <Link to="/" draggable="false">
+              <HomeOutlined />
+            </Link>
+          ),
+        },
+        {
+          key: "/playlists",
+          label: "Playlists",
+          icon: (
+            <Link to="/playlists" draggable="false">
+              <MenuOutlined />
+            </Link>
+          ),
+        },
+        {
+          key: "/favourites",
+          label: "Favourites",
+          icon: (
+            <Link to="/favourites" draggable="false">
+              <StarOutlined />
+            </Link>
+          ),
+        },
+      ];
+    }
+  } else {
+    items = [
+      {
+        key: "/",
+        label: "Home",
+        icon: (
+          <Link to="/" draggable="false">
+            <HomeOutlined />
+          </Link>
+        ),
+      },
+      {
+        key: "/favourites",
+        label: "Favourites",
+        icon: (
+          <Link to="/favourites" draggable="false">
+            <StarOutlined />
+          </Link>
+        ),
+      },
+    ];
+  }
 
   const location = useLocation();
   const [current] = useState(() => {

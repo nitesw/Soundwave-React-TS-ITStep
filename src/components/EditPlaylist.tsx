@@ -97,7 +97,8 @@ const EditPlaylist = () => {
           form={form}
           autoComplete="off"
         >
-          <Form.Item name="id" hidden></Form.Item>
+          <Form.Item<PlaylistFormFields> name="id" hidden></Form.Item>
+          <Form.Item<PlaylistFormFields> name="userId" hidden></Form.Item>
           <Form.Item<PlaylistFormFields>
             label="Title"
             name="title"

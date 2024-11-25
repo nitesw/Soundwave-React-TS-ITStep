@@ -1,7 +1,7 @@
-import axios from "axios";
+import createApiService from "./api.headers.service";
 
 const API = import.meta.env.VITE_PLAYLISTS_API;
-let api = axios.create({ baseURL: API });
+let api = createApiService(API);
 export const playlistsService = {
   getAll() {
     return api.get("all");

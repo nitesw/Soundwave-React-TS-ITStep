@@ -10,6 +10,7 @@ export interface PlaylistModel {
 }
 
 export type PlaylistFormFields = {
+  id?: number;
   title: string;
   description?: string | null;
   image: File;

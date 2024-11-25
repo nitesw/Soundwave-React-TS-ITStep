@@ -14,7 +14,7 @@ export interface TrackModel {
   genreId: number;
   genreName?: string;
   userId?: string;
-  userUserName?: string;
+  userName?: string;
   playlists?: PlaylistModel[];
 }
 

@@ -13,6 +13,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { PlaylistFormFields } from "../models/playlists";
 import { playlistsService } from "../services/playlists.service";
+import { tokenService } from "../services/token.service";
 const { TextArea } = Input;
 
 const normFile = (e: any) => {
@@ -42,6 +43,7 @@ const CreatePlaylist = () => {
       }
     });
 
+    entity.append("userId", tokenService.getPayload()?.id as string);
     console.log(entity);
 
     playlistsService
