@@ -20,16 +20,24 @@ import { musicService } from "../services/music.service";
 import { Link } from "react-router-dom";
 import { TrackModel } from "../models/music";
 import "../App.css";
+import { useAppSelector } from "../redux/hooks";
+import { selectAccount } from "../redux/account/accountSlice";
 
 const MusicTable = () => {
+  const account = useAppSelector(selectAccount);
   const [music, setMusic] = useState<TrackModel[]>([]);
 
   const columns: TableProps<TrackModel>["columns"] = [
-    {
-      title: "#",
-      dataIndex: "id",
-      key: "id",
-    },
+    ...(account?.role === "admin"
+      ? [
+          {
+            title: "#",
+            dataIndex: "id",
+            key: "id",
+          },
+        ]
+      : []),
+
     {
       title: "Image",
       dataIndex: "imgUrl",
@@ -111,12 +119,24 @@ const MusicTable = () => {
         </Space>
       ),
     },
+    ...(account?.role === "admin"
+      ? [
+          {
+            title: "Owner",
+            dataIndex: "userName",
+            key: "userName",
+          },
+        ]
+      : []),
   ];
 
   useEffect(() => {
     musicService.getAll().then((response) => {
-      // console.log(response);
-      setMusic(response.data as TrackModel[]);
+      if (account?.role === "admin") setMusic(response.data as TrackModel[]);
+      else {
+        const userTracks: TrackModel[] = response.data as TrackModel[];
+        setMusic(userTracks.filter((x) => x.userId === account?.id));
+      }
     });
   }, []);
 

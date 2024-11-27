@@ -17,23 +17,31 @@ import {
 import { Link } from "react-router-dom";
 import { PlaylistModel } from "../models/playlists";
 import { playlistsService } from "../services/playlists.service";
+import { useAppSelector } from "../redux/hooks";
+import { selectAccount } from "../redux/account/accountSlice";
 
 const PlaylistsTable = () => {
+  const account = useAppSelector(selectAccount);
   const [playlists, setPlaylists] = useState<PlaylistModel[]>([]);
 
   const columns: TableProps<PlaylistModel>["columns"] = [
-    {
-      title: "#",
-      dataIndex: "id",
-      key: "id",
-    },
+    ...(account?.role === "admin"
+      ? [
+          {
+            title: "#",
+            dataIndex: "id",
+            key: "id",
+          },
+        ]
+      : []),
     {
       title: "Image",
       dataIndex: "imgUrl",
       key: "image",
       render: (_, item) => (
         <img
-          height="50"
+          className="square-image"
+          style={{ height: "50px", width: "50px" }}
           src={item.imgUrl}
           alt={item.title}
         />
@@ -82,11 +90,25 @@ const PlaylistsTable = () => {
         </Space>
       ),
     },
+    ...(account?.role === "admin"
+      ? [
+          {
+            title: "Owner",
+            dataIndex: "userName",
+            key: "userName",
+          },
+        ]
+      : []),
   ];
 
   useEffect(() => {
     playlistsService.getAll().then((response) => {
-      setPlaylists(response.data as PlaylistModel[]);
+      if (account?.role === "admin")
+        setPlaylists(response.data as PlaylistModel[]);
+      else {
+        const userPlaylists = response.data as PlaylistModel[];
+        setPlaylists(userPlaylists.filter((x) => x.userId === account?.id));
+      }
     });
   }, []);
 

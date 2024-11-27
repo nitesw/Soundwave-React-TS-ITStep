@@ -17,4 +17,7 @@ export const accountsService = {
   logout() {
     tokenService.clear();
   },
+  isAuthenticated(): boolean {
+    return tokenService.get() !== null;
+  },
 };

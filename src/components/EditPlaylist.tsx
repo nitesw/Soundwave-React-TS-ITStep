@@ -13,6 +13,8 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { PlaylistFormFields, PlaylistModel } from "../models/playlists";
 import { playlistsService } from "../services/playlists.service";
+import { useAppSelector } from "../redux/hooks";
+import { selectAccount } from "../redux/account/accountSlice";
 const { TextArea } = Input;
 
 type QueryParams = {
@@ -25,6 +27,7 @@ const normFile = (e: any) => {
 
 const EditPlaylist = () => {
   const [playlist, setPlaylist] = useState<PlaylistModel | null>(null);
+  const account = useAppSelector(selectAccount);
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm<PlaylistFormFields>();
@@ -33,6 +36,10 @@ const EditPlaylist = () => {
   useEffect(() => {
     setLoading(true);
     playlistsService.getPlaylist(id!).then((res) => {
+      if (res.data?.userId !== account?.id && account?.role !== "admin") {
+        navigate("/playlists");
+        return;
+      }
       setPlaylist(res.data as PlaylistModel);
       form.setFieldsValue(res.data as PlaylistModel);
       setLoading(false);
@@ -144,6 +151,7 @@ const EditPlaylist = () => {
               <Button
                 type="default"
                 onClick={() => {
+                  console.log("playlist:", playlist);
                   if (playlist) {
                     form.setFieldsValue(playlist);
                   }

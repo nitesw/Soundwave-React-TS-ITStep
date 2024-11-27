@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import type { FormProps } from "antd";
 import { Button, Form, Input, message, Spin } from "antd";
 import { LoginFields } from "../models/accounts";
 import { accountsService } from "../services/accounts.service";
 import { Link, useNavigate } from "react-router-dom";
 import { tokenService } from "../services/token.service";
-import { useAccountContext } from "../contexts/accounts.context";
+import { useDispatch } from "react-redux";
+import { setAccount } from "../redux/account/accountSlice";
 
 const Login: React.FC = () => {
-  const { setAccount } = useAccountContext();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -21,9 +22,11 @@ const Login: React.FC = () => {
 
         if (res.status === 200) {
           tokenService.save(res.data.token);
-          setAccount(res.data.token);
           message.success("Successfully logged in!");
+
           navigate("/");
+          const payload = tokenService.getPayload();
+          if (payload) dispatch(setAccount(payload));
         }
       })
       .catch((err) => {

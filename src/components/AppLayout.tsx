@@ -14,18 +14,26 @@ import {
 import { Button, Layout, Menu, message, theme } from "antd";
 import { Footer } from "antd/es/layout/layout";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { useAccountContext } from "../contexts/accounts.context";
 import { accountsService } from "../services/accounts.service";
+import { useAppSelector } from "../redux/hooks";
+import {
+  clear,
+  selectAccount,
+  selectIsAuth,
+} from "../redux/account/accountSlice";
+import { useDispatch } from "react-redux";
+//import ReactPlayer from "react-player";
 
 const { Header, Sider, Content } = Layout;
 
 const AppLayout: React.FC = () => {
-  const { clear, isAuth, account } = useAccountContext();
+  const account = useAppSelector(selectAccount);
+  const isAuth = useAppSelector(selectIsAuth);
+  const dispatch = useDispatch();
   let items = null;
   const accountRole = account?.role;
-  if (isAuth()) {
+  if (isAuth) {
     console.log(accountRole);
-
     if (accountRole === "admin") {
       items = [
         {
@@ -74,7 +82,7 @@ const AppLayout: React.FC = () => {
           ),
         },
       ];
-    } else {
+    } else if (accountRole === "pro") {
       items = [
         {
           key: "/",
@@ -86,11 +94,41 @@ const AppLayout: React.FC = () => {
           ),
         },
         {
+          key: "/music",
+          label: "Music",
+          icon: (
+            <Link to="/music" draggable="false">
+              <CustomerServiceOutlined />
+            </Link>
+          ),
+        },
+        {
           key: "/playlists",
           label: "Playlists",
           icon: (
             <Link to="/playlists" draggable="false">
               <MenuOutlined />
+            </Link>
+          ),
+        },
+        {
+          key: "/favourites",
+          label: "Favourites",
+          icon: (
+            <Link to="/favourites" draggable="false">
+              <StarOutlined />
+            </Link>
+          ),
+        },
+      ];
+    } else {
+      items = [
+        {
+          key: "/",
+          label: "Home",
+          icon: (
+            <Link to="/" draggable="false">
+              <HomeOutlined />
             </Link>
           ),
         },
@@ -144,7 +182,7 @@ const AppLayout: React.FC = () => {
 
   const logout = () => {
     accountsService.logout();
-    clear();
+    dispatch(clear());
     message.success("Successfully logged out!");
   };
 
@@ -183,7 +221,7 @@ const AppLayout: React.FC = () => {
               height: 64,
             }}
           />
-          {isAuth() ? (
+          {isAuth ? (
             <div>
               <Link to="/profile">
                 <Button
@@ -250,9 +288,19 @@ const AppLayout: React.FC = () => {
         >
           <Outlet />
         </Content>
-        <Footer style={{ textAlign: "center", background: colorBgContainer }}>
+        <Footer style={{ background: colorBgContainer, textAlign: "center" }}>
           Soundwave ©{new Date().getFullYear()} Created using Ant UED
         </Footer>
+        {/* <div>
+          <ReactPlayer
+            style={{ backgroundColor: "transparent" }}
+            url="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+            playing={false}
+            controls={true}
+            width="100%"
+            height="50px"
+          />
+        </div> */}
       </Layout>
     </Layout>
   );
