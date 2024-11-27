@@ -67,7 +67,6 @@ const CreateTrack = () => {
 
     entity.append("isArchived", false.toString());
 
-    // entity.append("userId", "sup");
     console.log("FormData:", entity.get("userId"));
 
     musicService

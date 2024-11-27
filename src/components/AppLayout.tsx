@@ -30,6 +30,7 @@ const AppLayout: React.FC = () => {
   const account = useAppSelector(selectAccount);
   const isAuth = useAppSelector(selectIsAuth);
   const dispatch = useDispatch();
+
   let items = null;
   const accountRole = account?.role;
   if (isAuth) {

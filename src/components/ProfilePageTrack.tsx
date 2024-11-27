@@ -5,11 +5,11 @@ import { Link } from "react-router-dom";
 import { Button, ConfigProvider } from "antd";
 import { StarOutlined } from "@ant-design/icons";
 
-interface HomePageTrackProps {
+interface ProfilePageTrackProps {
   track: TrackModel;
 }
 
-const HomePageTrack: React.FC<HomePageTrackProps> = ({ track }) => {
+const ProfilePageTrack: React.FC<ProfilePageTrackProps> = ({ track }) => {
   return (
     <div
       style={{
@@ -44,7 +44,7 @@ const HomePageTrack: React.FC<HomePageTrackProps> = ({ track }) => {
             width: "100%",
           }}
         >
-          <Link to={"music/" + track.id}>
+          <Link to={"/music/" + track.id}>
             <h3 className="page-component-title">{track.title}</h3>
           </Link>
           <h4
@@ -66,4 +66,4 @@ const HomePageTrack: React.FC<HomePageTrackProps> = ({ track }) => {
   );
 };
 
-export default HomePageTrack;
+export default ProfilePageTrack;

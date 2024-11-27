@@ -3,6 +3,8 @@ export interface UserModel {
   userName: string;
   email: string;
   passwordHash: string;
+  playlistCount?: number;
+  trackCount?: number;
 }
 export type LoginFields = {
   userName?: string;

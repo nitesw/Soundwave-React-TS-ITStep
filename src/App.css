@@ -5,12 +5,12 @@
   aspect-ratio: 1 / 1;
   object-fit: cover;
 }
-.homepage-track-title {
+.page-component-title {
   margin: 0;
   font-weight: normal;
   color: black;
   transition: 0.1s;
 }
-.homepage-track-title:hover {
+.page-component-title:hover {
   opacity: 0.8;
 }

@@ -8,6 +8,9 @@ export const accountsService = {
   getAll() {
     return api.get("all");
   },
+  get(id: string) {
+    return api.get("getUser/?id=" + id);
+  },
   register(values: RegisterFields) {
     return api.post("register", values);
   },
