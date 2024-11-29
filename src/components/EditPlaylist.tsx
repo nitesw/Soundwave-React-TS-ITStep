@@ -22,7 +22,6 @@ const EditPlaylist = () => {
   const [playlist, setPlaylist] = useState<PlaylistModel | null>(null);
   const account = useAppSelector(selectAccount);
   const navigate = useNavigate();
-
   const [form] = Form.useForm<PlaylistFormFields>();
   const { id } = useParams<QueryParams>();
   const dispatch = useDispatch();
@@ -32,6 +31,7 @@ const EditPlaylist = () => {
     playlistsService.getPlaylist(id!).then((res) => {
       if (res.data?.userId !== account?.id && account?.role !== "admin") {
         navigate("/playlists");
+        dispatch(setSpinner(false));
         return;
       }
       setPlaylist(res.data as PlaylistModel);
@@ -136,7 +136,7 @@ const EditPlaylist = () => {
           <TextArea
             rows={14}
             placeholder="Enter description..."
-            maxLength={100}
+            maxLength={1000}
           />
         </Form.Item>
 

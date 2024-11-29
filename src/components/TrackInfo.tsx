@@ -96,7 +96,7 @@ export default function TrackInfo() {
     });
   }, []);
 
-  function timeAgo(date: Date) {
+  const timeAgo = (date: Date) => {
     const seconds = Math.floor(
       (new Date().getTime() - new Date(date).getTime()) / 1000
     );
@@ -126,430 +126,313 @@ export default function TrackInfo() {
       return interval === 1 ? "1 minute ago" : `${interval} minutes ago`;
     }
     return "just now";
-  }
+  };
+
+  const isTrackVisible = (item: any, account: any) => {
+    if (item.isPublic === true) {
+      return true;
+    }
+    if (item.isPublic === false && item.userId === account?.id) {
+      return true;
+    }
+    if (account?.role === "admin") {
+      return true;
+    }
+    return false;
+  };
 
   return (
-    <div>
-      <Button
-        onClick={() => navigate(-1)}
-        color="default"
-        variant="text"
-        icon={<LeftCircleOutlined />}
-      ></Button>
-      {item ? (
-        item.isPublic === true ? (
-          <Flex vertical>
-            <Flex style={{ padding: "16px" }}>
-              <img
-                style={{ borderRadius: "6px", width: "300px" }}
-                className="square-image"
-                src={item.imgUrl}
-                alt={item.title}
-                draggable="false"
-              />
-              <div style={{ marginLeft: "16px", width: "100%" }}>
-                <Flex
-                  vertical
-                  justify="space-between"
-                  style={{ height: "100%" }}
-                >
-                  <Flex justify="space-between">
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px",
-                      }}
-                    >
-                      <Button
-                        icon={
-                          !isPlaying ? (
-                            <PlayCircleOutlined />
-                          ) : (
-                            <PauseCircleOutlined />
-                          )
-                        }
-                        onClick={onPlayPause}
-                        disabled={!isWavesurferReady}
-                      ></Button>
-                      <div>
-                        <h2 style={{ margin: "0", fontWeight: "normal" }}>
-                          {item.title}
-                        </h2>
-                        <h3 style={{ margin: "0", fontWeight: "normal" }}>
-                          {item.userName}
-                        </h3>
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-end",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <h3 style={{ margin: "0", fontWeight: "normal" }}>
-                        {timeAgo(item.uploadDate)}
-                      </h3>
-                      <h2
+    <>
+      <div>
+        <Button
+          onClick={() => navigate(-1)}
+          color="default"
+          variant="text"
+          icon={<LeftCircleOutlined />}
+        ></Button>
+        {item ? (
+          isTrackVisible(item, account) ? (
+            <Flex vertical>
+              <Flex style={{ padding: "16px" }}>
+                <img
+                  style={{ borderRadius: "6px", width: "300px" }}
+                  className="square-image"
+                  src={item.imgUrl}
+                  alt={item.title}
+                  draggable="false"
+                />
+                <div style={{ marginLeft: "16px", width: "100%" }}>
+                  <Flex
+                    vertical
+                    justify="space-between"
+                    style={{ height: "100%" }}
+                  >
+                    <Flex justify="space-between">
+                      <div
                         style={{
-                          margin: "0",
-                          fontWeight: "normal",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "10px",
                         }}
                       >
-                        <Tag
+                        <Button
+                          icon={
+                            !isPlaying ? (
+                              <PlayCircleOutlined />
+                            ) : (
+                              <PauseCircleOutlined />
+                            )
+                          }
+                          onClick={onPlayPause}
+                          disabled={!isWavesurferReady}
+                        ></Button>
+                        <div>
+                          <h2 style={{ margin: "0", fontWeight: "normal" }}>
+                            {item.title}
+                          </h2>
+                          <h3 style={{ margin: "0", fontWeight: "normal" }}>
+                            {item.userName}
+                          </h3>
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "flex-end",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <h3 style={{ margin: "0", fontWeight: "normal" }}>
+                          {timeAgo(item.uploadDate)}
+                        </h3>
+                        <h2
                           style={{
                             margin: "0",
-                            fontSize: "16px",
-                            padding: "1px 7px 1px 7px",
+                            fontWeight: "normal",
                           }}
                         >
-                          <span style={{ marginRight: "5px" }}>#</span>
-                          {item.genreName}
-                        </Tag>
-                      </h2>
+                          <Tag
+                            style={{
+                              margin: "0",
+                              fontSize: "16px",
+                              padding: "1px 7px 1px 7px",
+                            }}
+                          >
+                            <span style={{ marginRight: "5px" }}>#</span>
+                            {item.genreName}
+                          </Tag>
+                        </h2>
+                      </div>
+                    </Flex>
+                    <div>
+                      {!isWavesurferReady ? (
+                        <Skeleton.Input size="large" active />
+                      ) : (
+                        ""
+                      )}
+                      <WavesurferPlayer
+                        height={100}
+                        waveColor="#656666"
+                        progressColor="#9623bc"
+                        barWidth={2}
+                        url={item.trackUrl}
+                        cursorWidth={0}
+                        onReady={onReady}
+                        onPlay={() => setIsPlaying(true)}
+                        onPause={() => setIsPlaying(false)}
+                      />
                     </div>
                   </Flex>
-                  <div>
-                    {!isWavesurferReady ? (
-                      <Skeleton.Input size="large" active />
-                    ) : (
-                      ""
-                    )}
-                    <WavesurferPlayer
-                      height={100}
-                      waveColor="#656666"
-                      progressColor="#9623bc"
-                      barWidth={2}
-                      url={item.trackUrl}
-                      cursorWidth={0}
-                      onReady={onReady}
-                      onPlay={() => setIsPlaying(true)}
-                      onPause={() => setIsPlaying(false)}
-                    />
-                  </div>
+                </div>
+              </Flex>
+              <Flex style={{ margin: "16px" }} justify="space-between">
+                <Flex gap="12px">
+                  <ConfigProvider
+                    theme={{ token: { colorPrimary: "#404040" } }}
+                  >
+                    <Button
+                      color="default"
+                      icon={<StarOutlined />}
+                      variant="outlined"
+                    >
+                      Favourite
+                    </Button>
+                    <Button
+                      color="default"
+                      icon={<LinkOutlined />}
+                      variant="outlined"
+                      onClick={() => {
+                        navigator.clipboard.writeText(location.href);
+                        message.success("Successfully copied!");
+                      }}
+                    >
+                      Copy link
+                    </Button>
+                    <Button
+                      color="default"
+                      icon={<MenuOutlined />}
+                      variant="outlined"
+                      onClick={() => setPlaylistsModal(true)}
+                    >
+                      Add to playlist
+                    </Button>
+                    <Modal
+                      title="Available playlists"
+                      open={playlistsModal}
+                      onCancel={() => setPlaylistsModal(false)}
+                      footer={null}
+                    >
+                      {playlists.length > 0 ? (
+                        playlists.map((playlist) => {
+                          return (
+                            <Flex
+                              key={playlist.id}
+                              align="center"
+                              style={{ marginTop: "20px" }}
+                              justify="space-between"
+                            >
+                              <Flex>
+                                <img
+                                  className="square-image"
+                                  style={{ height: "50px", width: "50px" }}
+                                  src={playlist.imgUrl}
+                                  alt={playlist.title}
+                                />
+                                <Flex vertical style={{ marginLeft: "15px" }}>
+                                  <Link
+                                    to={"/playlists/" + playlist.id}
+                                    style={{ fontWeight: "normal" }}
+                                  >
+                                    <h4 className="page-component-title">
+                                      {playlist.title}
+                                    </h4>
+                                  </Link>
+                                  <div>
+                                    Tracks:
+                                    <Tag style={{ marginLeft: "5px" }}>
+                                      {playlist.tracks?.length}
+                                    </Tag>
+                                  </div>
+                                </Flex>
+                              </Flex>
+                              {playlist.tracks?.some(
+                                (track) => track.id === item.id
+                              ) ? (
+                                <Button
+                                  color="default"
+                                  variant="outlined"
+                                  disabled={isDisabled}
+                                  onClick={() =>
+                                    removeFromPlaylist(playlist.id, item.id)
+                                  }
+                                >
+                                  Added
+                                </Button>
+                              ) : (
+                                <Button
+                                  color="default"
+                                  variant="outlined"
+                                  disabled={isDisabled}
+                                  onClick={() =>
+                                    addToPlaylist(playlist.id, item.id)
+                                  }
+                                >
+                                  Add
+                                </Button>
+                              )}
+                            </Flex>
+                          );
+                        })
+                      ) : (
+                        <h3 style={{ fontWeight: "normal" }}>
+                          You haven't created any playlists yet.
+                        </h3>
+                      )}
+                    </Modal>
+                  </ConfigProvider>
                 </Flex>
-              </div>
-            </Flex>
-            <Flex style={{ margin: "16px" }} gap="12px">
-              <ConfigProvider theme={{ token: { colorPrimary: "#404040" } }}>
-                <Button
-                  color="default"
-                  icon={<StarOutlined />}
-                  variant="outlined"
-                >
-                  Favourite
-                </Button>
-                <Button
-                  color="default"
-                  icon={<LinkOutlined />}
-                  variant="outlined"
-                  onClick={() => {
-                    navigator.clipboard.writeText(location.href);
-                    message.success("Successfully copied!");
+                {item.artistName ? (
+                  <Flex align="center">
+                    <h3
+                      style={{
+                        margin: 0,
+                        fontWeight: "normal",
+                      }}
+                    >
+                      Artist:
+                    </h3>
+                    <Tag style={{ margin: 0, marginLeft: "5px" }}>
+                      {item.artistName}
+                    </Tag>
+                  </Flex>
+                ) : (
+                  ""
+                )}
+              </Flex>
+              <Flex vertical style={{ padding: "0px 16px" }}>
+                <h1 style={{ fontWeight: "normal", margin: 0 }}>
+                  Description:
+                </h1>
+                <div
+                  style={{
+                    marginTop: "8px",
+                    maxHeight: "200px",
+                    minHeight: "200px",
+                    overflowY: "auto",
+                    padding: "8px",
+                    border: "1px solid #e0e0e0",
+                    borderRadius: "6px",
                   }}
                 >
-                  Copy link
-                </Button>
-                <Button
-                  color="default"
-                  icon={<MenuOutlined />}
-                  variant="outlined"
-                  onClick={() => setPlaylistsModal(true)}
-                >
-                  Add to playlist
-                </Button>
-                <Modal
-                  title="Available playlists"
-                  open={playlistsModal}
-                  onCancel={() => setPlaylistsModal(false)}
-                  footer={null}
-                >
-                  {playlists.length > 0 ? (
-                    playlists.map((playlist) => {
-                      return (
-                        <Flex
-                          key={playlist.id}
-                          align="center"
-                          style={{ marginTop: "20px" }}
-                          justify="space-between"
-                        >
-                          <Flex>
-                            <img
-                              className="square-image"
-                              style={{ height: "50px", width: "50px" }}
-                              src={playlist.imgUrl}
-                              alt={playlist.title}
-                            />
-                            <Flex vertical style={{ marginLeft: "15px" }}>
-                              <Link
-                                to={"/playlists/" + playlist.id}
-                                style={{ fontWeight: "normal" }}
-                              >
-                                <h4 className="page-component-title">
-                                  {playlist.title}
-                                </h4>
-                              </Link>
-                              <div>
-                                Tracks:
-                                <Tag style={{ marginLeft: "5px" }}>
-                                  {playlist.tracks?.length}
-                                </Tag>
-                              </div>
-                            </Flex>
-                          </Flex>
-                          {playlist.tracks?.some(
-                            (track) => track.id === item.id
-                          ) ? (
-                            <Button
-                              color="default"
-                              variant="outlined"
-                              disabled={isDisabled}
-                              onClick={() =>
-                                removeFromPlaylist(playlist.id, item.id)
-                              }
-                            >
-                              Added
-                            </Button>
-                          ) : (
-                            <Button
-                              color="default"
-                              variant="outlined"
-                              disabled={isDisabled}
-                              onClick={() =>
-                                addToPlaylist(playlist.id, item.id)
-                              }
-                            >
-                              Add
-                            </Button>
-                          )}
-                        </Flex>
-                      );
-                    })
+                  {item.description ? (
+                    <pre style={{ margin: "0" }}>{item.description}</pre>
                   ) : (
-                    <h3 style={{ fontWeight: "normal" }}>
-                      You haven't created any playlists yet.
+                    <h3 style={{ fontWeight: "normal", margin: 0 }}>
+                      No description.
                     </h3>
                   )}
-                </Modal>
-              </ConfigProvider>
+                </div>
+                <Flex align="center" style={{ marginTop: "10px" }}>
+                  {item.additionalTags
+                    ? item.additionalTags
+                        .trim()
+                        .split(",")
+                        .map((tag, index) => (
+                          <Tag
+                            key={index}
+                            style={{
+                              marginRight: "8px",
+                              fontSize: "12px",
+                            }}
+                            color="#ab9eaf"
+                          >
+                            <span style={{ marginRight: "5px" }}>#</span>
+                            {tag.trim()}
+                          </Tag>
+                        ))
+                    : null}
+                </Flex>
+              </Flex>
             </Flex>
-          </Flex>
-        ) : item.isPublic === false &&
-          item.userId !== account?.id &&
-          account?.role !== "admin" ? (
-          <Navigate to="/" />
+          ) : (
+            <Navigate to="/" />
+          )
         ) : (
-          <Flex vertical>
-            <Flex style={{ padding: "16px" }}>
-              <img
-                style={{ borderRadius: "6px", width: "300px" }}
-                className="square-image"
-                src={item.imgUrl}
-                alt={item.title}
-                draggable="false"
-              />
-              <div style={{ marginLeft: "16px", width: "100%" }}>
-                <Flex
-                  vertical
-                  justify="space-between"
-                  style={{ height: "100%" }}
-                >
-                  <Flex justify="space-between">
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px",
-                      }}
-                    >
-                      <Button
-                        icon={
-                          !isPlaying ? (
-                            <PlayCircleOutlined />
-                          ) : (
-                            <PauseCircleOutlined />
-                          )
-                        }
-                        onClick={onPlayPause}
-                        disabled={!isWavesurferReady}
-                      ></Button>
-                      <div>
-                        <h2 style={{ margin: "0", fontWeight: "normal" }}>
-                          {item.title}
-                        </h2>
-                        <h3 style={{ margin: "0", fontWeight: "normal" }}>
-                          {item.userName}
-                        </h3>
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-end",
-                        flexDirection: "column",
-                      }}
-                    >
-                      <h3 style={{ margin: "0", fontWeight: "normal" }}>
-                        {timeAgo(item.uploadDate)}
-                      </h3>
-                      <h2
-                        style={{
-                          margin: "0",
-                          fontWeight: "normal",
-                        }}
-                      >
-                        <Tag
-                          style={{
-                            margin: "0",
-                            fontSize: "16px",
-                            padding: "1px 7px 1px 7px",
-                          }}
-                        >
-                          <span style={{ marginRight: "5px" }}>#</span>
-                          {item.genreName}
-                        </Tag>
-                      </h2>
-                    </div>
-                  </Flex>
-                  <div>
-                    {!isWavesurferReady ? (
-                      <Skeleton.Input size="large" active />
-                    ) : (
-                      ""
-                    )}
-                    <WavesurferPlayer
-                      height={100}
-                      waveColor="#656666"
-                      progressColor="#9623bc"
-                      barWidth={2}
-                      url={item.trackUrl}
-                      cursorWidth={0}
-                      onReady={onReady}
-                      onPlay={() => setIsPlaying(true)}
-                      onPause={() => setIsPlaying(false)}
-                    />
-                  </div>
-                </Flex>
-              </div>
-            </Flex>
-            <Flex style={{ margin: "16px" }} gap="12px">
-              <ConfigProvider theme={{ token: { colorPrimary: "#404040" } }}>
-                <Button
-                  color="default"
-                  icon={<StarOutlined />}
-                  variant="outlined"
-                >
-                  Favourite
-                </Button>
-                <Button
-                  color="default"
-                  icon={<LinkOutlined />}
-                  variant="outlined"
-                  onClick={() => {
-                    navigator.clipboard.writeText(location.href);
-                    message.success("Successfully copied!");
-                  }}
-                >
-                  Copy link
-                </Button>
-                <Button
-                  color="default"
-                  icon={<MenuOutlined />}
-                  variant="outlined"
-                  onClick={() => setPlaylistsModal(true)}
-                >
-                  Add to playlist
-                </Button>
-                <Modal
-                  title="Available playlists"
-                  open={playlistsModal}
-                  onCancel={() => setPlaylistsModal(false)}
-                  footer={null}
-                >
-                  {playlists.length > 0 ? (
-                    playlists.map((playlist) => {
-                      return (
-                        <Flex
-                          key={playlist.id}
-                          align="center"
-                          style={{ marginTop: "20px" }}
-                          justify="space-between"
-                        >
-                          <Flex>
-                            <img
-                              className="square-image"
-                              style={{ height: "50px", width: "50px" }}
-                              src={playlist.imgUrl}
-                              alt={playlist.title}
-                            />
-                            <Flex vertical style={{ marginLeft: "15px" }}>
-                              <Link
-                                to={"/playlists/" + playlist.id}
-                                style={{ fontWeight: "normal" }}
-                              >
-                                <h4 className="page-component-title">
-                                  {playlist.title}
-                                </h4>
-                              </Link>
-                              <div>
-                                Tracks:
-                                <Tag style={{ marginLeft: "5px" }}>
-                                  {playlist.tracks?.length}
-                                </Tag>
-                              </div>
-                            </Flex>
-                          </Flex>
-                          {playlist.tracks?.some(
-                            (track) => track.id === item.id
-                          ) ? (
-                            <Button
-                              color="default"
-                              variant="outlined"
-                              disabled={isDisabled}
-                              onClick={() =>
-                                removeFromPlaylist(playlist.id, item.id)
-                              }
-                            >
-                              Added
-                            </Button>
-                          ) : (
-                            <Button
-                              color="default"
-                              variant="outlined"
-                              disabled={isDisabled}
-                              onClick={() =>
-                                addToPlaylist(playlist.id, item.id)
-                              }
-                            >
-                              Add
-                            </Button>
-                          )}
-                        </Flex>
-                      );
-                    })
-                  ) : (
-                    <h3 style={{ fontWeight: "normal" }}>
-                      You haven't created any playlists yet.
-                    </h3>
-                  )}
-                </Modal>
-              </ConfigProvider>
+          <Flex style={{ padding: "16px" }}>
+            <Skeleton.Image
+              active
+              style={{ width: "300px", height: "300px" }}
+            />
+            <Flex
+              justify="space-between"
+              style={{ marginLeft: "16px", width: "100%" }}
+            >
+              <Skeleton.Input active />
+              <Skeleton.Input active />
             </Flex>
           </Flex>
-        )
-      ) : (
-        <Flex style={{ padding: "16px" }}>
-          <Skeleton.Image active style={{ width: "300px", height: "300px" }} />
-          <Flex
-            justify="space-between"
-            style={{ marginLeft: "16px", width: "100%" }}
-          >
-            <Skeleton.Input active />
-            <Skeleton.Input active />
-          </Flex>
-        </Flex>
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 }

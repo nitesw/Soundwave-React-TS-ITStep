@@ -17,6 +17,8 @@ import { GenreModel, GenreOption } from "../models/genres";
 import { musicService } from "../services/music.service";
 import { useDispatch } from "react-redux";
 import { setSpinner } from "../redux/spinner/spinnerSlice";
+import { useAppSelector } from "../redux/hooks";
+import { selectAccount } from "../redux/account/accountSlice";
 const { TextArea } = Input;
 
 type QueryParams = {
@@ -29,6 +31,7 @@ const normFile = (e: any) => {
 
 const EditTrack = () => {
   const [track, setTrack] = useState<TrackModel | null>(null);
+  const account = useAppSelector(selectAccount);
   const navigate = useNavigate();
   const [genres, setGenres] = useState<GenreOption[]>([]);
   const [form] = Form.useForm<TrackFormFields>();
@@ -47,6 +50,11 @@ const EditTrack = () => {
       );
     });
     musicService.getTrack(id!).then((res) => {
+      if (res.data?.userId !== account?.id && account?.role !== "admin") {
+        navigate("/music");
+        dispatch(setSpinner(false));
+        return;
+      }
       setTrack(res.data as TrackModel);
       form.setFieldsValue(res.data as TrackModel);
       dispatch(setSpinner(false));
@@ -215,7 +223,7 @@ const EditTrack = () => {
           <TextArea
             rows={8}
             placeholder="Enter description..."
-            maxLength={100}
+            maxLength={1000}
           />
         </Form.Item>
 

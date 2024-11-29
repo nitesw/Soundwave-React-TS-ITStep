@@ -119,7 +119,7 @@ const CreatePlaylist = () => {
           <TextArea
             rows={14}
             placeholder="Enter description..."
-            maxLength={100}
+            maxLength={1000}
           />
         </Form.Item>
 

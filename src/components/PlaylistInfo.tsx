@@ -103,6 +103,7 @@ export default function PlaylistInfo() {
                   <div
                     style={{
                       marginTop: "8px",
+                      minHeight: "200px",
                       maxHeight: "200px",
                       overflowY: "auto",
                       padding: "8px",
@@ -174,7 +175,7 @@ export default function PlaylistInfo() {
                   </List>
                 ) : (
                   <h1 style={{ margin: 0, fontWeight: "normal" }}>
-                    You don't have any added tracks yet.
+                    You haven't added any tracks yet.
                   </h1>
                 )}
               </div>

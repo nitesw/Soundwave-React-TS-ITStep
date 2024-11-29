@@ -27,7 +27,6 @@ const normFile = (e: any) => {
 const CreateTrack = () => {
   const navigate = useNavigate();
   const [genres, setGenres] = useState<GenreOption[]>([]);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -220,7 +219,7 @@ const CreateTrack = () => {
           <TextArea
             rows={8}
             placeholder="Enter description..."
-            maxLength={100}
+            maxLength={1000}
           />
         </Form.Item>
 
