@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   CustomerServiceOutlined,
   HomeOutlined,
+  InfoCircleOutlined,
   LoginOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
@@ -82,6 +83,15 @@ const AppLayout: React.FC = () => {
             </Link>
           ),
         },
+        {
+          key: "/about",
+          label: "About",
+          icon: (
+            <Link to="/about" draggable="false">
+              <InfoCircleOutlined />
+            </Link>
+          ),
+        },
       ];
     } else if (accountRole === "pro") {
       items = [
@@ -121,6 +131,15 @@ const AppLayout: React.FC = () => {
             </Link>
           ),
         },
+        {
+          key: "/about",
+          label: "About",
+          icon: (
+            <Link to="/about" draggable="false">
+              <InfoCircleOutlined />
+            </Link>
+          ),
+        },
       ];
     } else {
       items = [
@@ -151,6 +170,15 @@ const AppLayout: React.FC = () => {
             </Link>
           ),
         },
+        {
+          key: "/about",
+          label: "About",
+          icon: (
+            <Link to="/about" draggable="false">
+              <InfoCircleOutlined />
+            </Link>
+          ),
+        },
       ];
     }
   } else {
@@ -170,6 +198,15 @@ const AppLayout: React.FC = () => {
         icon: (
           <Link to="/favourites" draggable="false">
             <StarOutlined />
+          </Link>
+        ),
+      },
+      {
+        key: "/about",
+        label: "About",
+        icon: (
+          <Link to="/about" draggable="false">
+            <InfoCircleOutlined />
           </Link>
         ),
       },

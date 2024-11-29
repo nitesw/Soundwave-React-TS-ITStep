@@ -18,6 +18,7 @@ import { ProtectedRoute } from "./security/ProtectedRoute";
 import { Spin } from "antd";
 import { useAppSelector } from "./redux/hooks";
 import { selectSpinner } from "./redux/spinner/spinnerSlice";
+import About from "./components/About";
 
 function App() {
   const spinner = useAppSelector(selectSpinner);
@@ -74,7 +75,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
           <Route
             path="/playlists/create"
             element={
@@ -117,6 +117,7 @@ function App() {
             }
           />
           <Route path="/favourites" element={<p>Favourites page</p>} />
+          <Route path="/about" element={<About />} />
           <Route path="*" element={<p>Page not found</p>} />
         </Route>
       </Routes>
