@@ -18,4 +18,10 @@ export const playlistsService = {
   editPlaylist(entity: FormData) {
     return api.put("edit", entity);
   },
+  addTrackToPlaylist(playlistId: number, trackId: number) {
+    return api.put(`addTrack?playlistId=${playlistId}&trackId=${trackId}`);
+  },
+  removeTrackFromPlaylist(playlistId: number, trackId: number) {
+    return api.put(`deleteTrack?playlistId=${playlistId}&trackId=${trackId}`);
+  },
 };

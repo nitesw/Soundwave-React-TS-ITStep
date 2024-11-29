@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import accountSlice from "./account/accountSlice";
+import spinnerSlice from "./spinner/spinnerSlice";
 
 export const store = configureStore({
   reducer: {
     account: accountSlice,
+    spinner: spinnerSlice,
     // others reducers, slices...
   },
 });

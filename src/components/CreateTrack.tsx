@@ -9,7 +9,6 @@ import {
   message,
   Select,
   Space,
-  Spin,
   Upload,
 } from "antd";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +16,8 @@ import { TrackFormFields } from "../models/music";
 import { GenreModel, GenreOption } from "../models/genres";
 import { musicService } from "../services/music.service";
 import { tokenService } from "../services/token.service";
+import { useDispatch } from "react-redux";
+import { setSpinner } from "../redux/spinner/spinnerSlice";
 const { TextArea } = Input;
 
 const normFile = (e: any) => {
@@ -26,9 +27,11 @@ const normFile = (e: any) => {
 const CreateTrack = () => {
   const navigate = useNavigate();
   const [genres, setGenres] = useState<GenreOption[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(setSpinner(true));
     musicService.getGenres().then((res) => {
       const items = res.data as GenreModel[];
       setGenres(
@@ -37,12 +40,15 @@ const CreateTrack = () => {
           value: x.id,
         }))
       );
+      dispatch(setSpinner(false));
     });
   }, []);
 
   const [selectedGenre, setSelectedGenre] = useState(1);
   const onSubmit: FormProps<TrackFormFields>["onFinish"] = (item) => {
-    setLoading(true);
+    // setLoading(true);
+    dispatch(setSpinner(true));
+
     const entity = new FormData();
     Object.keys(item).forEach((key) => {
       const typedKey = key as keyof TrackFormFields;
@@ -73,16 +79,17 @@ const CreateTrack = () => {
       .createTrack(entity)
       .then((res) => {
         if (res.status === 200) {
+          dispatch(setSpinner(false));
           message.success("Track created successfully!");
           navigate(-1);
         } else {
-          setLoading(false);
+          dispatch(setSpinner(false));
           const msg = res.data.errors[Object.keys(res.data.errors)[0]][0];
           message.error(msg);
         }
       })
       .catch((error) => {
-        setLoading(false);
+        dispatch(setSpinner(false));
         console.error("Error creating track:", error);
         message.error("An error occurred while creating the track.");
       });
@@ -90,150 +97,148 @@ const CreateTrack = () => {
 
   return (
     <>
-      <Spin spinning={loading}>
-        <Button
-          onClick={() => navigate(-1)}
-          color="default"
-          variant="text"
-          icon={<LeftCircleOutlined />}
-        ></Button>
-        <h1>Create new track</h1>
-        <Form
-          labelCol={{
-            span: 8,
-          }}
-          style={{ width: "100%" }}
-          layout="vertical"
-          onFinish={onSubmit}
-          autoComplete="off"
+      <Button
+        onClick={() => navigate(-1)}
+        color="default"
+        variant="text"
+        icon={<LeftCircleOutlined />}
+      ></Button>
+      <h1>Create new track</h1>
+      <Form
+        labelCol={{
+          span: 8,
+        }}
+        style={{ width: "100%" }}
+        layout="vertical"
+        onFinish={onSubmit}
+        autoComplete="off"
+      >
+        <Form.Item<TrackFormFields> name="userId" hidden></Form.Item>
+        <Form.Item<TrackFormFields>
+          label="Title"
+          name="title"
+          required
+          rules={[
+            {
+              required: true,
+              message: "Title must be at least 3 symbols long!",
+              min: 3,
+              max: 100,
+            },
+          ]}
         >
-          <Form.Item<TrackFormFields> name="userId" hidden></Form.Item>
+          <Input placeholder="Enter the title..." maxLength={100} />
+        </Form.Item>
+
+        <div style={{ display: "flex", width: "100%", gap: "16px" }}>
           <Form.Item<TrackFormFields>
-            label="Title"
-            name="title"
+            label="Image"
+            name="image"
+            style={{ width: "100%" }}
+            getValueFromEvent={normFile}
             required
             rules={[
               {
                 required: true,
-                message: "Title must be at least 3 symbols long!",
-                min: 3,
-                max: 100,
+                message: "Image is required!",
               },
             ]}
           >
-            <Input placeholder="Enter the title..." maxLength={100} />
-          </Form.Item>
-
-          <div style={{ display: "flex", width: "100%", gap: "16px" }}>
-            <Form.Item<TrackFormFields>
-              label="Image"
-              name="image"
+            <Upload
+              maxCount={1}
               style={{ width: "100%" }}
-              getValueFromEvent={normFile}
-              required
-              rules={[
-                {
-                  required: true,
-                  message: "Image is required!",
-                },
-              ]}
+              accept=".pjp,.jpg,.pjpeg,.jpeg,.jfif,.png"
+              beforeUpload={() => {
+                return false;
+              }}
             >
-              <Upload
-                maxCount={1}
-                style={{ width: "100%" }}
-                accept=".pjp,.jpg,.pjpeg,.jpeg,.jfif,.png"
-                beforeUpload={() => {
-                  return false;
-                }}
-              >
-                <Button icon={<UploadOutlined />} style={{ width: "100%" }}>
-                  Click to Upload
-                </Button>
-              </Upload>
-            </Form.Item>
-            <Form.Item<TrackFormFields>
-              label="Track"
-              name="track"
-              style={{ width: "100%" }}
-              getValueFromEvent={normFile}
-              required
-              rules={[
-                {
-                  required: true,
-                  message: "Track is required!",
-                },
-              ]}
-            >
-              <Upload
-                maxCount={1}
-                style={{ width: "100%" }}
-                accept=".mp3,.wav"
-                beforeUpload={() => {
-                  return false;
-                }}
-              >
-                <Button icon={<UploadOutlined />} style={{ width: "100%" }}>
-                  Click to Upload
-                </Button>
-              </Upload>
-            </Form.Item>
-          </div>
-          <div style={{ display: "flex", width: "100%", gap: "16px" }}>
-            <Form.Item<TrackFormFields>
-              label="Genre"
-              name="genreId"
-              required
-              style={{ width: "100%" }}
-            >
-              <Select
-                options={genres}
-                defaultValue={selectedGenre}
-                onChange={(value) => {
-                  setSelectedGenre(value);
-                }}
-              ></Select>
-            </Form.Item>
-
-            <Form.Item<TrackFormFields>
-              label="Additional tags"
-              name="additionalTags"
-              style={{ width: "100%" }}
-            >
-              <Input placeholder="Enter additional tags..." maxLength={40} />
-            </Form.Item>
-            <Form.Item<TrackFormFields>
-              label="Artist"
-              name="artistName"
-              style={{ width: "100%" }}
-            >
-              <Input placeholder="Enter artist name..." maxLength={20} />
-            </Form.Item>
-          </div>
-
-          <Form.Item<TrackFormFields> label="Description" name="description">
-            <TextArea
-              rows={8}
-              placeholder="Enter description..."
-              maxLength={100}
-            />
-          </Form.Item>
-
-          <Form.Item<TrackFormFields> name="isPublic" valuePropName="checked">
-            <Checkbox>Public</Checkbox>
-          </Form.Item>
-
-          <Form.Item>
-            <Space>
-              <Button type="default" htmlType="reset">
-                Reset
+              <Button icon={<UploadOutlined />} style={{ width: "100%" }}>
+                Click to Upload
               </Button>
-              <Button type="primary" htmlType="submit">
-                Create
-              </Button>
-            </Space>
+            </Upload>
           </Form.Item>
-        </Form>
-      </Spin>
+          <Form.Item<TrackFormFields>
+            label="Track"
+            name="track"
+            style={{ width: "100%" }}
+            getValueFromEvent={normFile}
+            required
+            rules={[
+              {
+                required: true,
+                message: "Track is required!",
+              },
+            ]}
+          >
+            <Upload
+              maxCount={1}
+              style={{ width: "100%" }}
+              accept=".mp3,.wav"
+              beforeUpload={() => {
+                return false;
+              }}
+            >
+              <Button icon={<UploadOutlined />} style={{ width: "100%" }}>
+                Click to Upload
+              </Button>
+            </Upload>
+          </Form.Item>
+        </div>
+        <div style={{ display: "flex", width: "100%", gap: "16px" }}>
+          <Form.Item<TrackFormFields>
+            label="Genre"
+            name="genreId"
+            required
+            style={{ width: "100%" }}
+          >
+            <Select
+              options={genres}
+              defaultValue={selectedGenre}
+              onChange={(value) => {
+                setSelectedGenre(value);
+              }}
+            ></Select>
+          </Form.Item>
+
+          <Form.Item<TrackFormFields>
+            label="Additional tags"
+            name="additionalTags"
+            style={{ width: "100%" }}
+          >
+            <Input placeholder="Enter additional tags..." maxLength={40} />
+          </Form.Item>
+          <Form.Item<TrackFormFields>
+            label="Artist"
+            name="artistName"
+            style={{ width: "100%" }}
+          >
+            <Input placeholder="Enter artist name..." maxLength={20} />
+          </Form.Item>
+        </div>
+
+        <Form.Item<TrackFormFields> label="Description" name="description">
+          <TextArea
+            rows={8}
+            placeholder="Enter description..."
+            maxLength={100}
+          />
+        </Form.Item>
+
+        <Form.Item<TrackFormFields> name="isPublic" valuePropName="checked">
+          <Checkbox>Public</Checkbox>
+        </Form.Item>
+
+        <Form.Item>
+          <Space>
+            <Button type="default" htmlType="reset">
+              Reset
+            </Button>
+            <Button type="primary" htmlType="submit">
+              Create
+            </Button>
+          </Space>
+        </Form.Item>
+      </Form>
     </>
   );
 };

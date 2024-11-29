@@ -134,6 +134,15 @@ const AppLayout: React.FC = () => {
           ),
         },
         {
+          key: "/playlists",
+          label: "Playlists",
+          icon: (
+            <Link to="/playlists" draggable="false">
+              <MenuOutlined />
+            </Link>
+          ),
+        },
+        {
           key: "/favourites",
           label: "Favourites",
           icon: (
@@ -291,6 +300,7 @@ const AppLayout: React.FC = () => {
         </Content>
         <Footer style={{ background: colorBgContainer, textAlign: "center" }}>
           Soundwave ©{new Date().getFullYear()} Created using Ant UED
+          {/* <AudioPlayer /> */}
         </Footer>
         {/* <div>
           <ReactPlayer

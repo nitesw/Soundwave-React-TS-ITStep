@@ -6,7 +6,7 @@ import { UserModel } from "../models/accounts";
 import { Button, Flex, message, Segmented, Skeleton, Tag } from "antd";
 import { LeftCircleOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { TrackModel } from "../models/music";
 import { musicService } from "../services/music.service";
 import { playlistsService } from "../services/playlists.service";
@@ -102,37 +102,44 @@ const Profile = () => {
                 block
                 onChange={setSelectedSegment}
               />
-              <div
-                style={{
-                  width: "100%",
-                }}
-                className="row row-cols-5"
-              >
-                {selectedSegment === "Tracks" ? (
-                  tracks.length > 0 ? (
-                    tracks.map((track: TrackModel) => {
+              {selectedSegment === "Tracks" ? (
+                tracks.length > 0 ? (
+                  <div
+                    style={{
+                      width: "100%",
+                    }}
+                    className="row row-cols-5"
+                  >
+                    {tracks.map((track: TrackModel) => {
                       return <ProfilePageTrack key={track.id} track={track} />;
-                    })
-                  ) : (
-                    <h3 style={{ marginTop: "10px" }}>
-                      You haven't created any tracks yet.
-                    </h3>
-                  )
-                ) : playlists.length > 0 ? (
-                  playlists.map((playlist: PlaylistModel) => {
+                    })}
+                  </div>
+                ) : (
+                  <h2 style={{ marginTop: "10px", fontWeight: "normal" }}>
+                    You haven't uploaded any tracks yet.
+                  </h2>
+                )
+              ) : playlists.length > 0 ? (
+                <div
+                  style={{
+                    width: "100%",
+                  }}
+                  className="row row-cols-5"
+                >
+                  {playlists.map((playlist: PlaylistModel) => {
                     return (
                       <ProfilePagePlaylist
                         key={playlist.id}
                         playlist={playlist}
                       />
                     );
-                  })
-                ) : (
-                  <h3 style={{ marginTop: "10px" }}>
-                    You haven't created any playlists yet.
-                  </h3>
-                )}
-              </div>
+                  })}
+                </div>
+              ) : (
+                <h2 style={{ marginTop: "10px", fontWeight: "normal" }}>
+                  You haven't created any playlists yet.
+                </h2>
+              )}
             </div>
           </Flex>
           <Flex justify="flex-end">

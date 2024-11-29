@@ -7,6 +7,7 @@ export interface PlaylistModel {
   description?: string;
   tracks?: TrackModel[];
   userId?: string;
+  userName?: string;
 }
 
 export type PlaylistFormFields = {
@@ -15,4 +16,5 @@ export type PlaylistFormFields = {
   description?: string | null;
   image: File;
   userId?: string;
+  userName?: string;
 };

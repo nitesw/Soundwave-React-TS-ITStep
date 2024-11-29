@@ -31,24 +31,34 @@ const HomePage: React.FC = () => {
       <h1 style={{ margin: "0", fontWeight: "normal" }}>
         Welcome to the Soundwave!
       </h1>
-      <h4 style={{ margin: "0", color: "gray", fontWeight: "normal" }}>
-        Here you can see some tracks as a recommendations!
-      </h4>
-      <div
-        style={{
-          padding: "20px",
-          width: "100%",
-        }}
-        className="row row-cols-5"
-      >
-        {music.map((track: TrackModel) => {
-          return track.isPublic === true ? (
-            <HomePageTrack key={track.id} track={track} />
-          ) : (
-            ""
-          );
-        })}
-      </div>
+      {music.length > 0 ? (
+        <h4 style={{ margin: "0", color: "gray", fontWeight: "normal" }}>
+          Here you can see some tracks as a recommendations!
+        </h4>
+      ) : (
+        <h4 style={{ margin: "0", color: "gray", fontWeight: "normal" }}>
+          Sorry! As for now there is no tracks that we can recommend!
+        </h4>
+      )}
+      {music.length > 0 ? (
+        <div
+          style={{
+            padding: "20px",
+            width: "100%",
+          }}
+          className="row row-cols-5"
+        >
+          {music.map((track: TrackModel) => {
+            return track.isPublic === true ? (
+              <HomePageTrack key={track.id} track={track} />
+            ) : (
+              ""
+            );
+          })}
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

@@ -6,37 +6,96 @@ import {
   PlayCircleOutlined,
   StarOutlined,
 } from "@ant-design/icons";
-import { Button, ConfigProvider, Flex, message, Skeleton, Tag } from "antd";
+import {
+  Button,
+  ConfigProvider,
+  Flex,
+  message,
+  Modal,
+  Skeleton,
+  Tag,
+} from "antd";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { TrackModel } from "../models/music";
 import { musicService } from "../services/music.service";
 import WavesurferPlayer from "@wavesurfer/react";
+import { PlaylistModel } from "../models/playlists";
+import { playlistsService } from "../services/playlists.service";
+import { useAppSelector } from "../redux/hooks";
+import { selectAccount } from "../redux/account/accountSlice";
 
 type Params = {
   id: string;
 };
 
 export default function TrackInfo() {
+  const account = useAppSelector(selectAccount);
   const [item, setItem] = useState<TrackModel | null>(null);
   const { id } = useParams<Params>();
   const navigate = useNavigate();
   const [wavesurfer, setWavesurfer] = useState<any | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [playlistsModal, setPlaylistsModal] = useState<boolean>(false);
+  const [playlists, setPlaylists] = useState<PlaylistModel[]>([]);
+  const [isDisabled, setDisabled] = useState<boolean>(false);
+  const [isWavesurferReady, setIsWavesurferReady] = useState<boolean>(false);
 
   const onReady = (ws: any) => {
+    console.log(playlists);
     setWavesurfer(ws);
+    setIsWavesurferReady(true);
     setIsPlaying(false);
   };
   const onPlayPause = () => {
     wavesurfer && wavesurfer.playPause();
   };
 
+  const addToPlaylist = (playlistId: number, trackId: number) => {
+    setDisabled(true);
+    playlistsService.addTrackToPlaylist(playlistId, trackId).then((res) => {
+      if (res.status === 200) {
+        const playlist = playlists.find((x) => x.id === playlistId)!;
+        playlist.tracks?.push(item!);
+        setPlaylistsModal(false);
+        message.success("Track added successfully!");
+        setDisabled(false);
+      } else {
+        const msg = res.data.errors[Object.keys(res.data.errors)[0]][0];
+        message.error(msg);
+      }
+    });
+  };
+  const removeFromPlaylist = (playlistId: number, trackId: number) => {
+    setDisabled(true);
+    playlistsService
+      .removeTrackFromPlaylist(playlistId, trackId)
+      .then((res) => {
+        if (res.status === 200) {
+          const playlist = playlists.find((x) => x.id === playlistId)!;
+          playlist.tracks = playlist.tracks?.filter(
+            (track) => track.id !== trackId
+          );
+          setPlaylistsModal(false);
+          message.success("Track removed successfully!");
+          setDisabled(false);
+        } else {
+          const msg = res.data.errors[Object.keys(res.data.errors)[0]][0];
+          message.error(msg);
+        }
+      });
+  };
+
   useEffect(() => {
+    playlistsService.getAll().then((res) => {
+      const userPlaylists = res.data as PlaylistModel[];
+      setPlaylists(userPlaylists.filter((x) => x.userId === account?.id));
+    });
     musicService.getTrack(id!).then((res) => {
       setItem(res.data as TrackModel);
     });
   }, []);
+
   function timeAgo(date: Date) {
     const seconds = Math.floor(
       (new Date().getTime() - new Date(date).getTime()) / 1000
@@ -106,6 +165,7 @@ export default function TrackInfo() {
                         )
                       }
                       onClick={onPlayPause}
+                      disabled={!isWavesurferReady}
                     ></Button>
                     <div>
                       <h2 style={{ margin: "0", fontWeight: "normal" }}>
@@ -146,6 +206,11 @@ export default function TrackInfo() {
                   </div>
                 </Flex>
                 <div>
+                  {!isWavesurferReady ? (
+                    <Skeleton.Input size="large" active />
+                  ) : (
+                    ""
+                  )}
                   <WavesurferPlayer
                     height={100}
                     waveColor="#656666"
@@ -161,7 +226,6 @@ export default function TrackInfo() {
               </Flex>
             </div>
           </Flex>
-
           <Flex style={{ margin: "16px" }} gap="12px">
             <ConfigProvider theme={{ token: { colorPrimary: "#404040" } }}>
               <Button
@@ -186,9 +250,81 @@ export default function TrackInfo() {
                 color="default"
                 icon={<MenuOutlined />}
                 variant="outlined"
+                onClick={() => setPlaylistsModal(true)}
               >
                 Add to playlist
               </Button>
+              <Modal
+                title="Available playlists"
+                open={playlistsModal}
+                onCancel={() => setPlaylistsModal(false)}
+                footer={null}
+              >
+                {playlists.length > 0 ? (
+                  playlists.map((playlist) => {
+                    return (
+                      <Flex
+                        key={playlist.id}
+                        align="center"
+                        style={{ marginTop: "20px" }}
+                        justify="space-between"
+                      >
+                        <Flex>
+                          <img
+                            className="square-image"
+                            style={{ height: "50px", width: "50px" }}
+                            src={playlist.imgUrl}
+                            alt={playlist.title}
+                          />
+                          <Flex vertical style={{ marginLeft: "15px" }}>
+                            <Link
+                              to={"/playlists/" + playlist.id}
+                              style={{ fontWeight: "normal" }}
+                            >
+                              <h4 className="page-component-title">
+                                {playlist.title}
+                              </h4>
+                            </Link>
+                            <div>
+                              Tracks:
+                              <Tag style={{ marginLeft: "5px" }}>
+                                {playlist.tracks?.length}
+                              </Tag>
+                            </div>
+                          </Flex>
+                        </Flex>
+                        {playlist.tracks?.some(
+                          (track) => track.id === item.id
+                        ) ? (
+                          <Button
+                            color="default"
+                            variant="outlined"
+                            disabled={isDisabled}
+                            onClick={() =>
+                              removeFromPlaylist(playlist.id, item.id)
+                            }
+                          >
+                            Added
+                          </Button>
+                        ) : (
+                          <Button
+                            color="default"
+                            variant="outlined"
+                            disabled={isDisabled}
+                            onClick={() => addToPlaylist(playlist.id, item.id)}
+                          >
+                            Add
+                          </Button>
+                        )}
+                      </Flex>
+                    );
+                  })
+                ) : (
+                  <h3 style={{ fontWeight: "normal" }}>
+                    You haven't created any playlists yet.
+                  </h3>
+                )}
+              </Modal>
             </ConfigProvider>
           </Flex>
         </Flex>
