@@ -23,4 +23,7 @@ export const accountsService = {
   isAuthenticated(): boolean {
     return tokenService.get() !== null;
   },
+  changeRole(userId: string, role: string) {
+    return api.put(`changeRole?userId=${userId}&role=${role}`);
+  },
 };

@@ -25,10 +25,18 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     const isNotAdmin = account?.role !== "admin";
     const isNotPro = account?.role !== "pro";
     const isNotUser = account?.role !== "user";
-    const isRestrictedPage =
-      location.pathname === "/users" || location.pathname === "/playlists";
+    const isRestrictedPage = location.pathname === "/playlists";
 
     if (isNotAdmin && isNotPro && isNotUser && isRestrictedPage) {
+      return <Navigate to="/" />;
+    }
+  }
+
+  if (isAuth) {
+    const isNotAdmin = account?.role !== "admin";
+    const isRestrictedPage = location.pathname === "/users";
+
+    if (isNotAdmin && isRestrictedPage) {
       return <Navigate to="/" />;
     }
   }

@@ -22,7 +22,7 @@ import { selectSpinner } from "./redux/spinner/spinnerSlice";
 function App() {
   const spinner = useAppSelector(selectSpinner);
   return (
-    <Spin spinning={spinner}>
+    <Spin spinning={spinner} size="large">
       <Routes>
         <Route path="/" element={<AppLayout />}>
           <Route index element={<HomePage />} />
